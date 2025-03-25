@@ -1,0 +1,46 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+détail du projet: 
+
+**hackathon pour Bolt.new**
+
+post initial de Bolt.new: 
+
+we need a sick website for this, so first competition begins now:
+
+we will give $3k to whoever makes the most beautiful & inspiring one we pick (use bolt & cursor/windsurf/etc to make it!)
+
+to submit yours, just quote tweet this post with your bolt URL and attach a video of it
+
+note: Bolt.new est un outil pour générer du code avec l'IA avec une interface no code pour l'utilisateur, ça peut peut-être jouer dans notre approche design/UI
+
+**info for the site:**
+
+Title: The World's Largest Hackathon
+Location: virtual
+Date: TBD
+Prizes: $1m+, allow for multiple prize types
+Theme: take creative freedom here
+Sponsors: include place for logos
+Judges: include place for headshots, name & bios
+URL: http://hackathon.dev
+
+**charte bolt:** 
+fond: 
+#0A0A0A
+
+textes: 
+#ffffff80 (blanc pour header et gros textes)
+#737373 (gris pour sous-texte et corps)
+#a3a3a3 (gris plus clair, même usage)
+
+
+Variantes autour du bleu pour gradient, boutons et bouts de texte à mettre en avant
+#1488fc
+#8adaff
+#1488FC
+
+destrcutif: #cd3131

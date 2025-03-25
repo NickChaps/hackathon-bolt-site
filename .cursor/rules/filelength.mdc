@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+**Très important**
+
+Tous tes fichiers doivent faire 300 lignes ou moins, sinon, c'est qu'il faut extraire qqch ou refactorer, cette consigne est absolue.
+
+le code doit être extrêmement bien organisé et propre pour être lisible par un débutant.

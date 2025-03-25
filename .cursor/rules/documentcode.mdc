@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+**TRES IMPORTANT**
+
+Tu dois ABSOLUMENT documenter tout le code produit de manière extensive car il vise à former des non codeurs. Cette nouvelle pédagogie implique pour eux de créer des projets avec toi puis de relire la totalité du code et des commentaires pour comprendre chaque fonction et apprendre les subtilités de la stack utilisée. 
+
+tu ne dois donc pas hésiter à tout commenter, comme si tu le faisais pour novice qui n'ont jamais vu de code.
+
+Réfléchis en même temps que tu commentes à la sécurité et aux failles potentielles, si tu en trouves, mets une marque **sécurité** et explique
+
+par ailleurs, du trouves des choses étranges, obsolètes ou à refactorer mets une marque **à revoir** et explique. Cela sera extrêmement utile pour sensibiliser nos débutants aux bonnes pratiques et les pointer dans la bonne direction.

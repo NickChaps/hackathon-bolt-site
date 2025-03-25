@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Lorsque tu exécutes un refactoring, fais en sorte de garder l'ancien fichier et d'ajoindre un .old pour référence. Cela permet une fois le refactoring exécuté, de comparer les fonctionnalités et de bien vérifier que rien n'est manquant.

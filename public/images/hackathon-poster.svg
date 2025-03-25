@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="627" viewBox="0 0 1200 627">
+  <!-- Fond noir -->
+  <rect width="1200" height="627" fill="#050510" />
+  
+  <!-- Grille de fond -->
+  <g opacity="0.15">
+    <path d="M0 50 L1200 50" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 100 L1200 100" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 150 L1200 150" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 200 L1200 200" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 250 L1200 250" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 300 L1200 300" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 350 L1200 350" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 400 L1200 400" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 450 L1200 450" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 500 L1200 500" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 550 L1200 550" stroke="#1488FC" stroke-width="1" />
+    <path d="M0 600 L1200 600" stroke="#1488FC" stroke-width="1" />
+    
+    <path d="M50 0 L50 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M100 0 L100 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M150 0 L150 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M200 0 L200 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M250 0 L250 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M300 0 L300 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M350 0 L350 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M400 0 L400 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M450 0 L450 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M500 0 L500 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M550 0 L550 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M600 0 L600 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M650 0 L650 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M700 0 L700 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M750 0 L750 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M800 0 L800 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M850 0 L850 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M900 0 L900 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M950 0 L950 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M1000 0 L1000 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M1050 0 L1050 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M1100 0 L1100 627" stroke="#1488FC" stroke-width="1" />
+    <path d="M1150 0 L1150 627" stroke="#1488FC" stroke-width="1" />
+  </g>
+  
+  <!-- Cercle décoratif lumineux -->
+  <circle cx="600" cy="313" r="200" fill="none" stroke="url(#circleGradient)" stroke-width="3" />
+  <circle cx="600" cy="313" r="180" fill="none" stroke="url(#circleGradient)" stroke-width="1" />
+  <circle cx="600" cy="313" r="220" fill="none" stroke="url(#circleGradient)" stroke-width="1" />
+  
+  <!-- Points lumineux en arrière-plan (simulant les étoiles) -->
+  <g>
+    <circle cx="150" cy="100" r="1" fill="#FFFFFF" />
+    <circle cx="250" cy="150" r="1.5" fill="#FFFFFF" />
+    <circle cx="350" cy="80" r="1" fill="#FFFFFF" />
+    <circle cx="450" cy="120" r="1" fill="#FFFFFF" />
+    <circle cx="550" cy="80" r="1.5" fill="#FFFFFF" />
+    <circle cx="650" cy="150" r="1" fill="#FFFFFF" />
+    <circle cx="750" cy="100" r="1" fill="#FFFFFF" />
+    <circle cx="850" cy="120" r="1.5" fill="#FFFFFF" />
+    <circle cx="950" cy="90" r="1" fill="#FFFFFF" />
+    <circle cx="1050" cy="130" r="1" fill="#FFFFFF" />
+    
+    <circle cx="120" cy="200" r="1" fill="#FFFFFF" />
+    <circle cx="220" cy="250" r="1.5" fill="#FFFFFF" />
+    <circle cx="320" cy="180" r="1" fill="#FFFFFF" />
+    <circle cx="420" cy="220" r="1" fill="#FFFFFF" />
+    <circle cx="520" cy="180" r="1.5" fill="#FFFFFF" />
+    <circle cx="620" cy="250" r="1" fill="#FFFFFF" />
+    <circle cx="720" cy="200" r="1" fill="#FFFFFF" />
+    <circle cx="820" cy="220" r="1.5" fill="#FFFFFF" />
+    <circle cx="920" cy="190" r="1" fill="#FFFFFF" />
+    <circle cx="1020" cy="230" r="1" fill="#FFFFFF" />
+    
+    <circle cx="180" cy="300" r="1" fill="#FFFFFF" />
+    <circle cx="280" cy="350" r="1.5" fill="#FFFFFF" />
+    <circle cx="380" cy="280" r="1" fill="#FFFFFF" />
+    <circle cx="480" cy="320" r="1" fill="#FFFFFF" />
+    <circle cx="580" cy="280" r="1.5" fill="#FFFFFF" />
+    <circle cx="680" cy="350" r="1" fill="#FFFFFF" />
+    <circle cx="780" cy="300" r="1" fill="#FFFFFF" />
+    <circle cx="880" cy="320" r="1.5" fill="#FFFFFF" />
+    <circle cx="980" cy="290" r="1" fill="#FFFFFF" />
+    <circle cx="1080" cy="330" r="1" fill="#FFFFFF" />
+    
+    <circle cx="150" cy="400" r="1" fill="#FFFFFF" />
+    <circle cx="250" cy="450" r="1.5" fill="#FFFFFF" />
+    <circle cx="350" cy="380" r="1" fill="#FFFFFF" />
+    <circle cx="450" cy="420" r="1" fill="#FFFFFF" />
+    <circle cx="550" cy="380" r="1.5" fill="#FFFFFF" />
+    <circle cx="650" cy="450" r="1" fill="#FFFFFF" />
+    <circle cx="750" cy="400" r="1" fill="#FFFFFF" />
+    <circle cx="850" cy="420" r="1.5" fill="#FFFFFF" />
+    <circle cx="950" cy="390" r="1" fill="#FFFFFF" />
+    <circle cx="1050" cy="430" r="1" fill="#FFFFFF" />
+    
+    <circle cx="120" cy="500" r="1" fill="#FFFFFF" />
+    <circle cx="220" cy="550" r="1.5" fill="#FFFFFF" />
+    <circle cx="320" cy="480" r="1" fill="#FFFFFF" />
+    <circle cx="420" cy="520" r="1" fill="#FFFFFF" />
+    <circle cx="520" cy="480" r="1.5" fill="#FFFFFF" />
+    <circle cx="620" cy="550" r="1" fill="#FFFFFF" />
+    <circle cx="720" cy="500" r="1" fill="#FFFFFF" />
+    <circle cx="820" cy="520" r="1.5" fill="#FFFFFF" />
+    <circle cx="920" cy="490" r="1" fill="#FFFFFF" />
+    <circle cx="1020" cy="530" r="1" fill="#FFFFFF" />
+  </g>
+  
+  <!-- Représentation abstraite simplifiée d'un globe en points -->
+  <g>
+    <circle cx="600" cy="313" r="100" fill="none" stroke="#1488FC" stroke-width="1" />
+    
+    <!-- Points pour suggérer les continents -->
+    <circle cx="540" cy="263" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="550" cy="273" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="560" cy="253" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="570" cy="243" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="580" cy="253" r="3" fill="#1488FC" opacity="0.8" />
+    
+    <circle cx="640" cy="273" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="650" cy="283" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="660" cy="293" r="3" fill="#1488FC" opacity="0.8" />
+    
+    <circle cx="575" cy="333" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="585" cy="343" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="595" cy="353" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="605" cy="363" r="3" fill="#1488FC" opacity="0.8" />
+    
+    <circle cx="515" cy="313" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="525" cy="323" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="535" cy="333" r="3" fill="#1488FC" opacity="0.8" />
+    
+    <circle cx="620" cy="273" r="3" fill="#1488FC" opacity="0.8" />
+    <circle cx="630" cy="283" r="3" fill="#1488FC" opacity="0.8" />
+  </g>
+  
+  <!-- Hexagones décoratifs -->
+  <path d="M180,160 L200,145 L220,160 L220,190 L200,205 L180,190 Z" fill="none" stroke="#1488FC" stroke-width="2" />
+  <path d="M980,160 L1000,145 L1020,160 L1020,190 L1000,205 L980,190 Z" fill="none" stroke="#1488FC" stroke-width="2" />
+  <path d="M180,460 L200,445 L220,460 L220,490 L200,505 L180,490 Z" fill="none" stroke="#1488FC" stroke-width="2" />
+  <path d="M980,460 L1000,445 L1020,460 L1020,490 L1000,505 L980,490 Z" fill="none" stroke="#1488FC" stroke-width="2" />
+  
+  <!-- Triangle décoratif avec dégradé -->
+  <path d="M600,100 L650,180 L550,180 Z" fill="url(#triangleGradient)" />
+  <path d="M600,527 L650,447 L550,447 Z" fill="url(#triangleGradient)" />
+  
+  <!-- Titre principal avec effet Glitch -->
+  <g>
+    <text x="600" y="313" font-family="'Orbitron', sans-serif" font-size="60" font-weight="700" text-anchor="middle" fill="#FFFFFF">HACKATHON.DEV</text>
+    <!-- Ombre glitch cyan -->
+    <text x="603" y="313" font-family="'Orbitron', sans-serif" font-size="60" font-weight="700" text-anchor="middle" fill="#00FFFF" opacity="0.7">HACKATHON.DEV</text>
+    <!-- Ombre glitch magenta -->
+    <text x="597" y="313" font-family="'Orbitron', sans-serif" font-size="60" font-weight="700" text-anchor="middle" fill="#FF00FF" opacity="0.5">HACKATHON.DEV</text>
+  </g>
+  
+  <!-- Slogan -->
+  <text x="600" y="373" font-family="'Syne', sans-serif" font-size="24" font-weight="500" text-anchor="middle" fill="#FFFFFF">REDEFINING THE FUTURE OF TECH</text>
+  
+  <!-- Informations du hackathon -->
+  <g>
+    <text x="600" y="423" font-family="'Syne', sans-serif" font-size="18" font-weight="400" text-anchor="middle" fill="#1488FC">$1M+ PRIZE POOL | 72H HACKING | 100+ COUNTRIES</text>
+  </g>
+  
+  <!-- Logo Bolt -->
+  <g transform="translate(580, 473)">
+    <path d="M10,0 L25,0 L15,15 L30,15 L5,40 L15,20 L0,20 Z" fill="#1488FC" />
+    <text x="40" y="25" font-family="'Orbitron', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">BOLT.NEW</text>
+  </g>
+  
+  <!-- Définitions des gradients -->
+  <defs>
+    <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1488FC" />
+      <stop offset="50%" stop-color="#00FFFF" />
+      <stop offset="100%" stop-color="#1488FC" />
+    </linearGradient>
+    
+    <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1488FC" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#00FFFF" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+</svg> 

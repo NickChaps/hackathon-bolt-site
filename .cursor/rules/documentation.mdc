@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+TOUJOURS mettre à jour la documentation de l'app après les modifications, pour s'assurer d'avoir une documentation complète pour référence
+
+il faut notamment un mapping complet des features et interactions
+
+

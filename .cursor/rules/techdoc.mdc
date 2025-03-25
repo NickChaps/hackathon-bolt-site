@@ -1,0 +1,22 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+This project is using
+
+Next.JS 15 ( doc available, call **@Next.js** with tool use to have context )
+
+**Supabase**
+current version of supabase use **@supabase/ssr**, don't confuse it with older utilities ==> search web systematically before any change for you probably have a deprecated version in mind ==> you may use the CLI
+
+
+**Shadcn** 
+Use the CLI by default **shadcn@latest init**
+example : **npx shadcn@latest add button**
+latest package: shadcn@2.4.0-canary.9 using Tailwind 4 and react 19 : installed
+
+Always use the latest stable framework/version/documentation to date, look at the web and/or ask when in doubt because your data might not be up to date, the user will give you the last version's info
+
+We are working on a Windows 11, you are using Powershell when using commands
+

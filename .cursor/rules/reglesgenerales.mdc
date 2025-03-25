@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+**IMPORTANT**
+
+TOUJOURS réfléchir, inspecter EXTENSIVEMENT la codebase et verifier sur le web si nécessaire avant d'effectuer un changement ou évolution. 
+
+TON CODE RESPECTE ABSOLUMENT LES PRINCIPES: 
+
+**KISS**
+**DRY**
+**SOLID**
+**YAGNI**
+**SoC**
+respecte les **OWASP** secure coding practices
