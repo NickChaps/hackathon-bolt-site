@@ -4,8 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Stars, useTexture, MeshDistortMaterial, Environment, Sparkles } from '@react-three/drei';
+import { useTexture, MeshDistortMaterial, Environment } from '@react-three/drei';
 import gsap from 'gsap';
+
+// Importer nos nouveaux composants
+import CircuitBackground from './CircuitBackground';
+import { HolographicEffect, HolographicInterface } from './HolographicEffect';
 
 // Composant globe 3D amélioré
 function Globe() {
@@ -49,65 +53,6 @@ function Globe() {
         />
       </mesh>
     </mesh>
-  );
-}
-
-// Composant particules flottantes qui réagissent à la souris
-function FloatingParticles() {
-  const { mouse, viewport } = useThree();
-  const particlesRef = useRef<THREE.Points>(null);
-
-  useFrame(() => {
-    if (particlesRef.current) {
-      // Mouvement des particules qui suivent légèrement la souris
-      particlesRef.current.rotation.x = THREE.MathUtils.lerp(
-        particlesRef.current.rotation.x,
-        mouse.y * 0.2,
-        0.1
-      );
-      particlesRef.current.rotation.y = THREE.MathUtils.lerp(
-        particlesRef.current.rotation.y,
-        mouse.x * 0.2,
-        0.1
-      );
-    }
-  });
-
-  return (
-    <Sparkles
-      count={200}
-      scale={12}
-      size={1}
-      speed={0.3}
-      color="#1488fc"
-      opacity={0.6}
-    />
-  );
-}
-
-// Composant fond étoilé animé
-function AnimatedStars() {
-  const { camera } = useThree();
-  
-  useEffect(() => {
-    // Animation d'ouverture du zoom camera avec effet de rebond
-    gsap.to(camera.position, {
-      z: 10,
-      duration: 2.5,
-      ease: 'elastic.out(1, 0.5)',
-    });
-  }, [camera]);
-
-  return (
-    <Stars
-      radius={100}
-      depth={50}
-      count={7000}
-      factor={4}
-      saturation={0.6}
-      fade
-      speed={1.5}
-    />
   );
 }
 
@@ -183,9 +128,10 @@ export default function HeroSection() {
         <Canvas camera={{ position: [0, 0, 15], fov: 60 }}>
           <ambientLight intensity={0.2} />
           <pointLight position={[10, 10, 10]} intensity={1} />
-          <AnimatedStars />
+          <CircuitBackground />
           <Globe />
-          <FloatingParticles />
+          <HolographicInterface />
+          <HolographicEffect />
           <Environment preset="night" />
         </Canvas>
       </div>
