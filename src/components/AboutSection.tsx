@@ -376,10 +376,10 @@ export default function AboutSection() {
             
             {/* Titre avec "HACKATHONS" plus délicat et animé */}
             <div className="mb-20 relative">
-              <h3 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              <h3 className="text-4xl md:text-6xl font-bold text-white mb-4 px-4 sm:px-0">
                 Redefining
               </h3>
-              <div className="relative">
+              <div className="relative overflow-hidden px-4 sm:px-0">
                 {/* Animation subtile de pulsation */}
                 <motion.div 
                   className="absolute -inset-x-2 -inset-y-1 opacity-40 rounded-lg"
@@ -397,7 +397,7 @@ export default function AboutSection() {
                     ease: "easeInOut"
                   }}
                 />
-                <h2 className="relative text-5xl md:text-7xl font-black tracking-wide">
+                <h2 className="relative text-4xl sm:text-5xl md:text-7xl font-black tracking-wide">
                   <motion.span 
                     className="inline-block bg-gradient-to-r from-[#1488fc] via-[#8adaff] to-[#1488fc] bg-clip-text text-transparent"
                     animate={{
@@ -543,7 +543,7 @@ hackathon();`}
             
             {/* Badge flottant avec animation */}
             <motion.div 
-              className="absolute -bottom-6 -right-6 glass rounded-lg shadow-lg border border-white/10 overflow-hidden"
+              className="absolute -bottom-6 -right-6 glass rounded-lg shadow-lg border border-white/10 overflow-hidden max-w-[90%] sm:max-w-none right-0 bottom-0 sm:-bottom-6 sm:-right-6"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -577,9 +577,9 @@ hackathon();`}
               />
               
               {/* Contenu horizontal */}
-              <div className="py-2 px-4 flex items-center justify-center gap-2">
+              <div className="py-2 px-3 sm:px-4 flex items-center justify-center gap-1 sm:gap-2 flex-wrap text-xs sm:text-base">
                 <span className="text-accent-blue-light font-medium">Powered by</span>
-                <span className="gradient-text font-bold text-lg">Bolt.new</span>
+                <span className="gradient-text font-bold text-base sm:text-lg">Bolt.new</span>
                 <motion.div
                   animate={{ 
                     boxShadow: [

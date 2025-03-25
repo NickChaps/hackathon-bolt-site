@@ -278,27 +278,6 @@ export default function HeroSection() {
           <path d="M12 5V19M12 19L19 12M12 19L5 12" stroke="#8adaff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </motion.div>
-      
-      {/* Notification contextuelle */}
-      <div className="relative">
-        <motion.div 
-          className="absolute top-20 -left-2 text-center bg-white/5 backdrop-blur-md rounded-lg p-3 max-w-[180px] border border-white/10 text-xs"
-          initial={{ opacity: 0, scale: 0.9, y: 10 }}
-          animate={{ 
-            opacity: [0, 1, 1, 0],
-            scale: [0.9, 1, 1, 0.9],
-            y: [10, 0, 0, -10]
-          }}
-          transition={{
-            duration: 4,
-            times: [0, 0.1, 0.9, 1],
-            repeat: Infinity,
-            repeatDelay: 10
-          }}
-        >
-          Don&apos;t miss out on the world&apos;s largest hackathon!
-        </motion.div>
-      </div>
     </section>
   );
 } 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -14,68 +14,129 @@ const logoParticles = [
   { left: 34.67, top: 76.34, xMovement: -4, yMovement: 2, delay: 0.25 },
 ];
 
+// Liste des liens de navigation
+const navLinks = [
+  { name: 'Home', href: '#home', id: 'home' },
+  { name: 'About', href: '#about', id: 'about' },
+  { name: 'Prizes', href: '#prizes', id: 'prizes' },
+  { name: 'Sponsors', href: '#sponsors', id: 'sponsors' },
+  { name: 'Judges', href: '#judges', id: 'judges' },
+  { name: 'Register', href: '#register', id: 'register' },
+];
+
 // Composant NavBar avec un design futuriste et interactif amélioré
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
   
   // Refs pour les éléments de navigation
   const navRefs = useRef<Array<HTMLLIElement | null>>([]);
+  const lastActiveSection = useRef(activeSection);
+  const scrollPosition = useRef(0);
+
+  // Fonction pour détecter la section active
+  const detectActiveSection = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    const sections = [...navLinks].reverse().map(link => link.id);
+    let foundSection = false;
+    
+    for (const section of sections) {
+      const element = document.getElementById(section);
+      if (element && currentScrollY >= element.offsetTop - 100) {
+        foundSection = true;
+        lastActiveSection.current = section;
+        return section;
+      }
+    }
+    
+    // Toujours retourner lastActiveSection si aucune section n'est trouvée
+    // au lieu de revenir à 'home' par défaut
+    return lastActiveSection.current;
+  }, []);
 
   // Effet pour détecter le scroll et changer l'apparence de la navbar
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setScrolled(scrollPosition > 50);
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 50);
       
-      // Détection de la section active basée sur la position de scroll
-      const sections = ['home', 'about', 'prizes', 'sponsors', 'judges', 'register'];
-      for (const section of sections.reverse()) {
-        const element = document.getElementById(section);
-        if (element && window.scrollY >= element.offsetTop - 100) {
-          setActiveSection(section);
-          break;
-        }
+      // Ne pas mettre à jour la section active si le menu mobile est ouvert
+      if (!mobileMenuOpen) {
+        // Utiliser la fonction pour détecter la section active
+        const newActiveSection = detectActiveSection();
+        setActiveSection(newActiveSection);
       }
     };
 
+    // Appliquer dès le chargement
+    handleScroll();
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [detectActiveSection, mobileMenuOpen]);
   
-  // Fermer le menu mobile quand on clique en dehors
+  // Mettre à jour la section active lorsque le menu mobile s'ouvre
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
-        setMobileMenuOpen(false);
-      }
+    if (mobileMenuOpen) {
+      // Stocker la section active actuelle quand on ouvre le menu
+      const currentActiveSection = detectActiveSection();
+      setActiveSection(currentActiveSection);
+      
+      // Stocker la position de défilement actuelle
+      scrollPosition.current = window.scrollY;
+      
+      // Désactiver le défilement tout en conservant la position visuelle
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollPosition.current}px`;
+      document.body.style.width = '100%';
+    } else if (document.body.style.position === 'fixed') {
+      // Restaurer le défilement et la position seulement si on était en position fixed
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      
+      // Restaurer la position de défilement exacte sans modifier la section active
+      window.scrollTo(0, scrollPosition.current);
+      
+      // Réappliquer la section active après fermeture du menu
+      // pour s'assurer qu'elle ne change pas
+      const currentActiveSection = detectActiveSection();
+      setActiveSection(currentActiveSection);
     }
     
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    return () => {
+      // Nettoyage en cas de démontage du composant
+      if (document.body.style.position === 'fixed') {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+      }
+    };
+  }, [mobileMenuOpen, detectActiveSection]);
   
   // Fermer le menu mobile quand on clique sur un lien
-  const handleMobileLinkClick = () => {
-    setMobileMenuOpen(false);
+  const handleMobileLinkClick = (linkId: string, e?: React.MouseEvent<HTMLAnchorElement>) => {
+    // Définir la section active immédiatement pour un feedback visuel instantané
+    setActiveSection(linkId);
+    lastActiveSection.current = linkId;
+    
+    // Fermer le menu avec un court délai pour permettre aux animations de se terminer
+    // et aux états de se mettre à jour correctement
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 50);
+    
+    // Ne pas empêcher la navigation par défaut
+    // Le navigateur va automatiquement scroller vers l'ancre
   };
-
-  // Liste des liens de navigation
-  const navLinks = [
-    { name: 'Home', href: '#home', id: 'home' },
-    { name: 'About', href: '#about', id: 'about' },
-    { name: 'Prizes', href: '#prizes', id: 'prizes' },
-    { name: 'Sponsors', href: '#sponsors', id: 'sponsors' },
-    { name: 'Judges', href: '#judges', id: 'judges' },
-    { name: 'Register', href: '#register', id: 'register' },
-  ];
 
   return (
     <motion.header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'glass py-2 backdrop-blur-md border-b border-white/5' : 'py-4'
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
+        scrolled 
+          ? 'glass md:py-2 py-4 backdrop-blur-md border-b border-white/5' 
+          : 'py-4'
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -254,115 +315,82 @@ export default function NavBar() {
           </ul>
         </nav>
         
-        {/* Bouton Register amélioré */}
-        <Link 
-          href="#register" 
-          className="relative overflow-hidden group px-6 py-2 rounded-md text-white font-bold transition-all"
-        >
-          {/* Fond du bouton avec effet de glow */}
-          <span className="absolute inset-0 bg-gradient-to-r from-accent-blue to-accent-blue-light rounded-md opacity-90 group-hover:opacity-100 transition-opacity duration-300"></span>
-          
-          {/* Effet de brillance au hover */}
-          <span className="absolute inset-0 w-full h-full shine-effect opacity-0 group-hover:opacity-100"></span>
-          
-          {/* Animation de pulse autour du bouton */}
-          <span className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-accent-blue to-accent-blue-light blur-md group-hover:animate-pulse"></span>
-          </span>
-          
-          <span className="relative z-10">Register Now</span>
-        </Link>
+        {/* Bouton Register amélioré - masqué sur mobile */}
+        <div className="hidden md:block">
+          <Link 
+            href="#register" 
+            className="relative overflow-hidden group px-6 py-2 rounded-md text-white font-bold transition-all"
+          >
+            {/* Fond du bouton avec effet de glow */}
+            <span className="absolute inset-0 bg-gradient-to-r from-accent-blue to-accent-blue-light rounded-md opacity-90 group-hover:opacity-100 transition-opacity duration-300"></span>
+            
+            {/* Effet de brillance au hover */}
+            <span className="absolute inset-0 w-full h-full shine-effect opacity-0 group-hover:opacity-100"></span>
+            
+            {/* Animation de pulse autour du bouton */}
+            <span className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-accent-blue to-accent-blue-light blur-md group-hover:animate-pulse"></span>
+            </span>
+            
+            <span className="relative z-10">Register Now</span>
+          </Link>
+        </div>
       </div>
       
-      {/* Bouton menu mobile amélioré */}
-      <motion.button
-        className="md:hidden absolute top-4 right-4 z-50 w-10 h-10 flex flex-col items-center justify-center"
+      {/* Bouton menu mobile avec animation par classes conditionnelles - simplifié avec position fixe */}
+      <button
+        className="md:hidden fixed top-4 right-4 z-50 w-10 h-10 flex flex-col items-center justify-center"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        aria-label="Toggle Menu"
+        aria-label={mobileMenuOpen ? "Close Menu" : "Open Menu"}
       >
-        <motion.div
-          className="w-8 h-[2px] bg-white mb-1.5"
-          animate={{ 
-            rotate: mobileMenuOpen ? 45 : 0,
-            y: mobileMenuOpen ? 8 : 0,
-            backgroundColor: mobileMenuOpen ? "#8adaff" : "#ffffff" 
-          }}
-          transition={{ duration: 0.3 }}
-        />
-        <motion.div
-          className="w-8 h-[2px] bg-white mb-1.5"
-          animate={{ 
-            opacity: mobileMenuOpen ? 0 : 1,
-            width: mobileMenuOpen ? 0 : 32
-          }}
-          transition={{ duration: 0.3 }}
-        />
-        <motion.div
-          className="w-8 h-[2px] bg-white"
-          animate={{ 
-            rotate: mobileMenuOpen ? -45 : 0,
-            y: mobileMenuOpen ? -8 : 0,
-            backgroundColor: mobileMenuOpen ? "#8adaff" : "#ffffff"
-          }}
-          transition={{ duration: 0.3 }}
-        />
-      </motion.button>
+        <span className={`w-8 h-[2px] bg-white mb-1.5 transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-[6px] bg-accent-blue-light' : ''}`}></span>
+        <span className={`w-8 h-[2px] bg-white mb-1.5 transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
+        <span className={`w-8 h-[2px] bg-white transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-[6px] bg-accent-blue-light' : ''}`}></span>
+      </button>
       
-      {/* Menu mobile complet avec animations */}
-      <AnimatePresence>
+      {/* Menu mobile avec Framer Motion pour une meilleure animation */}
+      <AnimatePresence mode="wait">
         {mobileMenuOpen && (
           <motion.div
-            ref={mobileMenuRef}
-            className="fixed inset-0 z-40 glass backdrop-blur-lg md:hidden"
+            className="fixed inset-0 z-45 md:hidden bg-background/95 backdrop-blur-xl flex items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
-            <div className="flex items-center justify-center h-full">
-              <nav className="max-w-md w-full">
-                <ul className="flex flex-col items-center space-y-6 p-8">
+            <div className="w-full h-full flex items-center justify-center px-4">
+              <motion.nav 
+                className="w-full max-w-md" 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ delay: 0.1, duration: 0.3 }}
+              >
+                <ul className="flex flex-col items-center space-y-6 p-8 pt-20">
                   {navLinks.map((link, index) => (
                     <motion.li 
                       key={link.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ delay: index * 0.1, duration: 0.3 }}
                       className="w-full"
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 20, opacity: 0 }}
+                      transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
                     >
                       <Link 
                         href={link.href}
-                        onClick={handleMobileLinkClick}
+                        onClick={(e) => handleMobileLinkClick(link.id, e)}
                         className={`block text-center text-xl p-4 rounded-lg ${
                           activeSection === link.id
                             ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
                             : 'text-white hover:bg-white/5 border border-transparent'
-                        }`}
+                        } ${link.id === 'register' ? 'bg-gradient-to-r from-accent-blue to-accent-blue-light text-white font-bold shadow-md' : ''}`}
                       >
-                        {link.name}
+                        {link.id === 'register' ? 'Register Now' : link.name}
                       </Link>
                     </motion.li>
                   ))}
-                  
-                  {/* Bouton Register dans le menu mobile */}
-                  <motion.li
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ delay: navLinks.length * 0.1, duration: 0.3 }}
-                    className="w-full mt-6"
-                  >
-                    <Link 
-                      href="#register" 
-                      onClick={handleMobileLinkClick}
-                      className="block w-full p-4 text-center bg-gradient-to-r from-accent-blue to-accent-blue-light text-white font-bold rounded-lg shadow-md"
-                    >
-                      Register Now
-                    </Link>
-                  </motion.li>
                 </ul>
-              </nav>
+              </motion.nav>
             </div>
           </motion.div>
         )}

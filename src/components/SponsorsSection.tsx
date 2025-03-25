@@ -163,8 +163,24 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
   onClick, 
   categoryColor 
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Détecter si on est sur mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
   const scale = sponsor.size || 1;
-  const badgeSize = 56 * scale; // Taille de base du badge en pixels (augmentée)
+  // Taille de base du badge en pixels, réduite sur mobile
+  const badgeSize = isMobile 
+    ? 40 * scale 
+    : 56 * scale;
   
   // Afficher le nom au survol et quand actif
   const [isHovered, setIsHovered] = useState(false);
@@ -228,7 +244,7 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
         <span className="text-xl font-bold" style={{ 
           color: isActive || isHovered ? categoryColor : `${categoryColor}90`,
           filter: isActive || isHovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.8))' : 'none',
-          fontSize: `${Math.max(20, 16 * scale)}px`
+          fontSize: `${Math.max(isMobile ? 16 : 20, isMobile ? 12 : 16 * scale)}px`
         }}>
           {sponsor.name.charAt(0)}
         </span>
@@ -247,30 +263,32 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
         />
       </motion.div>
       
-      {/* Nom du sponsor flottant sous le badge */}
-      <motion.div 
-        className="absolute mt-1 bg-black/60 backdrop-blur-sm rounded-md px-3 py-1 text-center"
-        style={{
-          top: '100%',
-          left: '50%',
-          translateX: '-50%',
-          minWidth: `${badgeSize * 1.8}px`,
-          border: `1px solid ${categoryColor}80`,
-          boxShadow: `0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 0 5px ${categoryColor}40`,
-        }}
-        initial={{ opacity: 0, y: 0 }}
-        animate={{ 
-          opacity: showName ? 1 : 0,
-          y: showName ? 5 : 0,
-          scale: showName ? 1 : 0.9
-        }}
-        transition={{ duration: 0.2 }}
-      >
-        <p className="text-white text-sm font-medium whitespace-nowrap">{sponsor.name}</p>
-        <p className="text-xs" style={{ color: categoryColor }}>
-          {sponsorNetwork.categories.find(c => c.id === sponsor.category)?.name}
-        </p>
-      </motion.div>
+      {/* Nom du sponsor flottant sous le badge - masqué sur mobile si pas actif */}
+      {(!isMobile || isActive) && (
+        <motion.div 
+          className="absolute mt-1 bg-black/60 backdrop-blur-sm rounded-md px-3 py-1 text-center"
+          style={{
+            top: '100%',
+            left: '50%',
+            translateX: '-50%',
+            minWidth: `${badgeSize * 1.8}px`,
+            border: `1px solid ${categoryColor}80`,
+            boxShadow: `0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 0 5px ${categoryColor}40`,
+          }}
+          initial={{ opacity: 0, y: 0 }}
+          animate={{ 
+            opacity: showName ? 1 : 0,
+            y: showName ? 5 : 0,
+            scale: showName ? 1 : 0.9
+          }}
+          transition={{ duration: 0.2 }}
+        >
+          <p className="text-white text-sm font-medium whitespace-nowrap">{sponsor.name}</p>
+          <p className="text-xs" style={{ color: categoryColor }}>
+            {sponsorNetwork.categories.find(c => c.id === sponsor.category)?.name}
+          </p>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
@@ -368,88 +386,118 @@ const SponsorDetailCard: React.FC<SponsorDetailCardProps> = ({
   position,
   onClose 
 }) => {
-  // Position de la carte, décalée du badge
-  const cardPosition = {
-    x: position.x > 50 ? position.x - 20 : position.x + 20,
-    y: position.y > 50 ? position.y - 15 : position.y + 15
-  };
+  // Utilisation d'un state pour détecter si on est sur mobile
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Détecter si on est sur mobile avec un effet
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  // Position adaptative selon la taille d'écran
+  const cardPosition = isMobile 
+    ? {
+        // Sur mobile, carte centrée en bas de l'écran
+        x: 50,
+        y: 75
+      }
+    : {
+        // Sur desktop, carte décalée par rapport au badge
+        x: position.x > 50 ? position.x - 20 : position.x + 20,
+        y: position.y > 50 ? position.y - 15 : position.y + 15
+      };
   
   return (
     <>
-      {/* Ligne reliant le badge à la carte détaillée */}
-      <svg className="absolute top-0 left-0 w-full h-full pointer-events-none z-10">
-        <motion.path
-          d={`M ${position.x} ${position.y} L ${cardPosition.x} ${cardPosition.y}`}
-          stroke={category.color}
-          strokeWidth={1.5}
-          strokeDasharray="4 4"
-          fill="none"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        />
-      </svg>
+      {/* Ligne reliant le badge à la carte détaillée - masquée sur mobile */}
+      {!isMobile && (
+        <svg className="absolute top-0 left-0 w-full h-full pointer-events-none z-10">
+          <motion.path
+            d={`M ${position.x} ${position.y} L ${cardPosition.x} ${cardPosition.y}`}
+            stroke={category.color}
+            strokeWidth={1.5}
+            strokeDasharray="4 4"
+            fill="none"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </svg>
+      )}
       
-    <motion.div 
-        className="absolute glass p-6 rounded-xl shadow-glow z-20"
-      style={{ 
+      <motion.div 
+        className={`glass p-6 rounded-xl shadow-glow z-20 ${
+          isMobile ? 'fixed bottom-4 left-4 right-4 w-auto' : 'absolute'
+        }`}
+        style={isMobile ? {
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: `${category.color}50`,
+          boxShadow: `0 10px 25px -5px ${category.color}40`
+        } : { 
           left: `${cardPosition.x}%`,
           top: `${cardPosition.y}%`,
           transform: 'translate(-50%, -50%)',
           width: '280px',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: `${category.color}50`,
-        boxShadow: `0 10px 25px -5px ${category.color}40`
-      }}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-    >
-      <button 
-        onClick={onClose}
-        className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: `${category.color}50`,
+          boxShadow: `0 10px 25px -5px ${category.color}40`
+        }}
+        initial={isMobile ? { opacity: 0, y: 50 } : { opacity: 0, scale: 0.9 }}
+        animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, scale: 1 }}
+        exit={isMobile ? { opacity: 0, y: 50 } : { opacity: 0, scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </button>
-      
-      <div className="flex items-center gap-4 mb-4">
-        <div 
-          className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold"
-          style={{ 
-            background: `linear-gradient(135deg, ${category.color}30, ${category.color}10)`,
-            border: `2px solid ${category.color}`,
-            color: category.color
-          }}
-        >
-            {sponsor.name.charAt(0)}
-        </div>
-        <div>
-            <h4 className="text-xl font-bold text-white">{sponsor.name}</h4>
-          <p className="text-sm" style={{ color: category.color }}>{category.name}</p>
-        </div>
-      </div>
-      
-        <p className="text-muted-light mb-4">{sponsor.description}</p>
-      
-      <div className="flex justify-between">
-        <button className="px-4 py-2 rounded-md bg-white/5 hover:bg-white/10 text-white transition-colors text-sm">
-          Learn More
-        </button>
         <button 
-          className="px-4 py-2 rounded-md text-white transition-colors text-sm"
-          style={{ 
-            backgroundColor: `${category.color}20`,
-            color: category.color 
-          }}
+          onClick={onClose}
+          className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
         >
-          Visit Website
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
-      </div>
-    </motion.div>
+        
+        <div className="flex items-center gap-4 mb-4">
+          <div 
+            className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold"
+            style={{ 
+              background: `linear-gradient(135deg, ${category.color}30, ${category.color}10)`,
+              border: `2px solid ${category.color}`,
+              color: category.color
+            }}
+          >
+            {sponsor.name.charAt(0)}
+          </div>
+          <div>
+            <h4 className="text-xl font-bold text-white">{sponsor.name}</h4>
+            <p className="text-sm" style={{ color: category.color }}>{category.name}</p>
+          </div>
+        </div>
+        
+        <p className="text-muted-light mb-4">{sponsor.description}</p>
+        
+        <div className="flex justify-between">
+          <button className="px-4 py-2 rounded-md bg-white/5 hover:bg-white/10 text-white transition-colors text-sm">
+            Learn More
+          </button>
+          <button 
+            className="px-4 py-2 rounded-md text-white transition-colors text-sm"
+            style={{ 
+              backgroundColor: `${category.color}20`,
+              color: category.color 
+            }}
+          >
+            Visit Website
+          </button>
+        </div>
+      </motion.div>
     </>
   );
 };
@@ -516,7 +564,19 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
   const [selectedSponsor, setSelectedSponsor] = useState<number | null>(null);
   const [positions, setPositions] = useState<Record<number, Position>>({});
   const [isPositioned, setIsPositioned] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Détecter si on est sur mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   // Calculer les positions une seule fois au chargement
   useEffect(() => {
@@ -534,10 +594,16 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
       
       // Trier les nœuds par catégorie pour le positionnement
       const categoryIndex = sponsorNetwork.categories.findIndex(c => c.id === sponsor.category);
-      const radiusFactor = 0.7 + (categoryIndex / sponsorNetwork.categories.length) * 0.3;
       
-      // Rayon adapté à la taille du badge
-      const radius = 25 * radiusFactor + Math.random() * 5;
+      // Sur mobile, on réduit le rayon pour que tout tienne dans l'écran
+      const radiusFactor = isMobile
+        ? 0.5 + (categoryIndex / sponsorNetwork.categories.length) * 0.3
+        : 0.7 + (categoryIndex / sponsorNetwork.categories.length) * 0.3;
+      
+      // Rayon adapté à la taille du badge et au type d'appareil
+      const radius = isMobile
+        ? 35 * radiusFactor + Math.random() * 5
+        : 25 * radiusFactor + Math.random() * 5;
       
       fixedPositions[sponsor.id] = { 
         x: 50 + Math.cos(angle) * radius,
@@ -552,7 +618,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
     // Enregistrer les positions et marquer comme positionné
     setPositions(adjustedPositions);
     setIsPositioned(true);
-  }, [isVisible, isPositioned]);
+  }, [isVisible, isPositioned, isMobile]);
   
   // Fonction pour résoudre les chevauchements en une seule étape
   const resolveOverlaps = (initialPos: Record<number, Position>): Record<number, Position> => {
@@ -694,9 +760,15 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
   // Si aucune position n'est encore calculée, afficher un indicateur de chargement
   const hasPositions = Object.keys(positions).length > 0;
   
-  // Ajout d'un gestionnaire de redimensionnement
+  // Réajuster les positions en cas de redimensionnement de la fenêtre
   useEffect(() => {
     const handleResize = () => {
+      // Réinitialiser les positions si la taille de l'écran change significativement
+      const isMobileNow = window.innerWidth < 768;
+      if (isMobileNow !== isMobile) {
+        setIsPositioned(false);
+      }
+      
       if (containerRef.current) {
         // Removed setDimensions call
       }
@@ -706,7 +778,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
     handleResize();
     
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [isMobile]);
   
   return (
     <motion.div 
