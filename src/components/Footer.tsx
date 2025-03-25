@@ -317,7 +317,7 @@ export default function Footer() {
             </div>
             
             <p className="text-muted-light text-md leading-relaxed">
-              The world's largest virtual hackathon bringing together developers, 
+              The world&apos;s largest virtual hackathon bringing together developers, 
               designers, and innovators from across the globe to build the future of technology.
             </p>
             

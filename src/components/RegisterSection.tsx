@@ -96,7 +96,7 @@ export default function RegisterSection() {
             <h2 className="text-sm uppercase tracking-wider text-accent-blue mb-2">Join Us</h2>
             <h3 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">Access Terminal</h3>
             <p className="text-lg text-muted-light">
-              Connect to our secure registration system to claim your spot in the world's largest hackathon.
+              Connect to our secure registration system to claim your spot in the world&apos;s largest hackathon.
               Complete authentication to join innovators from around the globe.
             </p>
           </motion.div>
@@ -144,7 +144,7 @@ export default function RegisterSection() {
                       </div>
                       <h4 className="text-xl font-bold text-white mb-2">Registration Successful!</h4>
                       <p className="text-muted-light mb-6">
-                        We've sent confirmation details to your email. Get ready for an amazing hackathon experience!
+                        We&apos;ve sent confirmation details to your email. Get ready for an amazing hackathon experience!
                       </p>
                       <button
                         onClick={() => setFormState({ name: '', email: '', submitted: false, loading: false })}
@@ -180,7 +180,7 @@ export default function RegisterSection() {
                     </DialogHeader>
                     <div className="py-4">
                       <p className="text-sm text-white/80 mb-4">
-                        We're looking for experienced professionals to mentor hackathon teams.
+                        We&apos;re looking for experienced professionals to mentor hackathon teams.
                         Please email your resume and areas of expertise to:
                       </p>
                       <p className="text-accent-blue-light font-mono text-center py-3 bg-white/5 rounded-lg">

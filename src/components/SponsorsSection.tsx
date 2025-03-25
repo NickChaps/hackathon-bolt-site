@@ -517,7 +517,6 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
   const [positions, setPositions] = useState<Record<number, Position>>({});
   const [isPositioned, setIsPositioned] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   
   // Calculer les positions une seule fois au chargement
   useEffect(() => {
@@ -538,7 +537,6 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
       const radiusFactor = 0.7 + (categoryIndex / sponsorNetwork.categories.length) * 0.3;
       
       // Rayon adapté à la taille du badge
-      const nodeSize = sponsor.size || 1;
       const radius = 25 * radiusFactor + Math.random() * 5;
       
       fixedPositions[sponsor.id] = { 
@@ -554,7 +552,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
     // Enregistrer les positions et marquer comme positionné
     setPositions(adjustedPositions);
     setIsPositioned(true);
-  }, [isVisible]);
+  }, [isVisible, isPositioned]);
   
   // Fonction pour résoudre les chevauchements en une seule étape
   const resolveOverlaps = (initialPos: Record<number, Position>): Record<number, Position> => {
@@ -700,8 +698,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: rect.height });
+        // Removed setDimensions call
       }
     };
     
@@ -732,7 +729,7 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
       {/* Afficher un indicateur de chargement si nécessaire */}
       {isVisible && !hasPositions && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-accent-blue text-lg">Chargement de l'écosystème...</div>
+          <div className="text-accent-blue text-lg">Chargement de l&apos;écosystème...</div>
         </div>
       )}
       

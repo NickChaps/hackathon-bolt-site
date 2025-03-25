@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 
 // Données pour les statistiques
 const stats = [
@@ -220,45 +219,22 @@ const SparkEffect = () => {
   );
 };
 
-// Modification de l'élément de code pour mieux utiliser l'espace vertical
-const CodeElement = () => {
-  return (
-    <div className="h-full w-full flex flex-col bg-black rounded-lg p-4 overflow-hidden relative circuit-border">
-      <SparkEffect />
-      
-      <div className="flex flex-col items-center justify-center h-full">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-6xl font-bold text-white mb-4"
-        >
-          {'</>'}
-        </motion.div>
-        
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-center"
-        >
-          <span className="text-accent-blue-light font-mono text-xl">Build.</span>
-          <span className="text-accent-purple font-mono text-xl mx-2">Create.</span>
-          <span className="text-accent-green font-mono text-xl">Innovate.</span>
-        </motion.div>
-      </div>
-      
-      <div className="circuit-line h-[1px] w-full top-1/3 left-0 opacity-30"></div>
-      <div className="circuit-line h-[1px] w-full bottom-1/3 left-0 opacity-30"></div>
-      <div className="circuit-line w-[1px] h-full left-1/3 top-0 opacity-30"></div>
-      <div className="circuit-line w-[1px] h-full right-1/3 top-0 opacity-30"></div>
-    </div>
-  );
-};
+// Define proper type interfaces
+interface Stat {
+  number: string;
+  label: string;
+  icon: string;
+}
+
+interface Feature {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  delay: number;
+}
 
 // Mise à jour du rendu des statistiques pour ajouter les étincelles
-// Remplacer l'expression JSX standalone par une fonction
-const StatCard = ({ stat, index }: { stat: any; index: number }) => {
+const StatCard = ({ stat, index }: { stat: Stat; index: number }) => {
   const ref = useRef(null);
   const isInView = useInView(ref);
   
@@ -287,9 +263,8 @@ const featureVariants = {
   visible: { opacity: 1, y: 0 }
 };
 
-// Mise à jour du rendu des features pour ajouter les étincelles
-// Remplacer l'expression JSX standalone par une fonction
-const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
+// Replace any with proper types
+const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) => {
   const ref = useRef(null);
   const isInView = useInView(ref);
   
@@ -464,8 +439,8 @@ export default function AboutSection() {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.7, delay: 0.4 }}
             >
-              This isn't just another hackathon. It's a global movement bringing together 
-              the world's most innovative minds to solve real-world problems through code.
+              This isn&apos;t just another hackathon. It&apos;s a global movement bringing together 
+              the world&apos;s most innovative minds to solve real-world problems through code.
             </motion.p>
           </motion.div>
         </div>
@@ -646,12 +621,12 @@ hackathon();`}
             >
               <h3 className="text-3xl font-bold mb-6 text-white">The Ultimate Coding Challenge</h3>
               <p className="text-lg text-muted-light mb-6">
-                Whether you're a seasoned developer, a creative designer, or just starting your 
+                Whether you&apos;re a seasoned developer, a creative designer, or just starting your 
                 tech journey, this hackathon is your platform to innovate, learn, and connect 
                 with the global tech community.
               </p>
               <p className="text-lg text-muted-light">
-                Over the course of 72 hours, you'll collaborate with talented individuals from 
+                Over the course of 72 hours, you&apos;ll collaborate with talented individuals from 
                 around the world, receive mentorship from industry experts, and compete for a 
                 share of our massive prize pool.
               </p>
@@ -676,7 +651,7 @@ hackathon();`}
           <div className="text-center mb-12">
             <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">Frequently Asked Questions</h3>
             <p className="text-muted-light max-w-2xl mx-auto">
-              Everything you need to know about the world's largest hackathon
+              Everything you need to know about the world&apos;s largest hackathon
             </p>
           </div>
           

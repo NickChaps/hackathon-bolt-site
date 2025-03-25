@@ -1,8 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Card } from '@/components/ui/card';
+import { motion, useInView } from 'framer-motion';
 import { HolographicEffect } from './HolographicEffect';
 
 interface PrizeFeature {
@@ -556,121 +555,41 @@ export default function PrizesSection() {
             <span className="text-accent-blue">$1,000,000+</span> in Prizes
           </h2>
           <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
-            We're rewarding innovation with substantial prizes that can help you take your project to the next level. From grand prizes to category awards, there are multiple opportunities to win.
+            We&apos;re rewarding innovation with substantial prizes that can help you take your project to the next level. From grand prizes to category awards, there are multiple opportunities to win.
           </p>
         </motion.div>
         
         <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {prizes.map((prize, index) => (
+          {prizes.map((prize) => (
             <motion.div
               key={prize.id}
-              className="h-[340px]"
+              className="relative"
               variants={{
-                hidden: { opacity: 0, y: 50 },
-                visible: { 
-                  opacity: 1, 
-                  y: 0, 
-                  transition: { duration: 0.6, ease: "easeOut" } 
-                }
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
               }}
+              transition={{ duration: 0.6 }}
             >
-              <HolographicEffect
-                id={prize.id}
-                isOpen={openCardId === prize.id}
-                onOpen={() => {
-                  // Ajouter un effet sonore futuriste lors de l'ouverture
-                  if (typeof window !== 'undefined') {
-                    const audio = new Audio();
-                    audio.src = '/sounds/hologram-open.mp3'; // Assurez-vous d'avoir ce fichier
-                    audio.volume = 0.2;
-                    audio.play().catch(() => {/* Gérer l'erreur silencieusement */});
-                  }
-                  setOpenCardId(prize.id);
-                }}
-                revealContent={<DetailedPrizeCard prize={prize} />}
-                className="w-full h-full rounded-lg backface-hidden"
-                rotationFactor={8}
-                active={true}
-              >
-                <motion.div 
-                  className="relative bg-gray-900/60 backdrop-blur-sm h-full w-full rounded-lg overflow-hidden border border-gray-800"
-                  initial={{ opacity: 1 }}
-                  whileHover={{ 
-                    boxShadow: "0 0 25px 5px rgba(77, 162, 255, 0.3)",
-                    borderColor: "rgba(77, 162, 255, 0.5)",
-                  }}
-                  transition={{ duration: 0.2 }}
+              {openCardId === prize.id ? (
+                <HolographicEffect 
+                  isOpen={true}
+                  revealContent={<DetailedPrizeCard prize={prize} />}
                 >
-                  {/* Effet de particules énergétiques qui s'intensifient au survol */}
-                  <motion.div 
-                    className="absolute inset-0 pointer-events-none overflow-hidden z-0"
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {Array.from({ length: 8 }).map((_, idx) => {
-                      // Positions fixes pour éviter les erreurs d'hydratation
-                      const fixedPositions = [
-                        { x: 20, y: 30 },
-                        { x: 40, y: 50 },
-                        { x: 60, y: 70 },
-                        { x: 80, y: 20 },
-                        { x: 30, y: 80 },
-                        { x: 70, y: 40 },
-                        { x: 50, y: 60 },
-                        { x: 90, y: 10 }
-                      ];
-
-                      return (
-                        <motion.div
-                          key={`card-particle-${idx}`}
-                          className="absolute w-[2px] h-[2px] rounded-full bg-accent-blue"
-                          style={{
-                            left: `${fixedPositions[idx].x}%`,
-                            top: `${fixedPositions[idx].y}%`,
-                            boxShadow: "0 0 8px 2px rgba(77, 162, 255, 0.8)",
-                            opacity: 0
-                          }}
-                          animate={{ 
-                            opacity: [0, 0.8, 0],
-                            scale: [0, 2, 0],
-                            x: [0, (idx % 2 === 0 ? 20 : -20)],
-                            y: [0, (idx % 2 === 0 ? -20 : 20)],
-                          }}
-                          transition={{ 
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: idx * 0.25,
-                            repeatDelay: 1
-                          }}
-                        />
-                      );
-                    })}
-                  </motion.div>
-                  
-                  {/* Lignes de grille holographique */}
-                  <motion.div
-                    className="absolute inset-0 pointer-events-none z-0"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(to right, rgba(77, 162, 255, 0.1) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(77, 162, 255, 0.1) 1px, transparent 1px)
-                      `,
-                      backgroundSize: '20px 20px',
-                      opacity: 0
-                    }}
-                    whileHover={{ opacity: 0.4 }}
-                    transition={{ duration: 0.5 }}
-                  />
-                  
                   <SummaryPrizeCard prize={prize} />
-                </motion.div>
-              </HolographicEffect>
+                </HolographicEffect>
+              ) : (
+                <HolographicEffect
+                  active={true}
+                  onOpen={() => setOpenCardId(prize.id)}
+                >
+                  <SummaryPrizeCard prize={prize} />
+                </HolographicEffect>
+              )}
             </motion.div>
           ))}
         </motion.div>

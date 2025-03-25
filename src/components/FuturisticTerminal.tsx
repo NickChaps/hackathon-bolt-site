@@ -194,6 +194,53 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
       setTimeout(() => setParticleEffect(false), 3000);
     }
     
+    // Gestionnaire des commandes utilitaires communes intégré dans useCallback
+    const handleUtilityCommandsInternal = (command: string) => {
+      if (command === 'help') {
+        let helpText = "Available commands: ";
+        switch (registrationStep) {
+          case 'welcome':
+            helpText += "'start' - Begin registration, 'clear' - Clear terminal";
+            break;
+          case 'name':
+          case 'email':
+            helpText += "'back' - Go back, 'restart' - Start over, 'clear' - Clear terminal";
+            break;
+          case 'confirm':
+            helpText += "'confirm' - Complete registration, 'edit' - Modify information, 'restart' - Start over";
+            break;
+          case 'completed':
+            helpText += "'restart' - Register another participant, 'clear' - Clear terminal";
+            break;
+        }
+        addSystemResponse(helpText);
+      } else if (command === 'clear') {
+        setHistory([
+          { isCommand: false, content: "// TERMINAL CLEARED", id: nextId + 1 },
+          { isCommand: false, content: "Current step: " + registrationStep, id: nextId + 2 }
+        ]);
+        setNextId(prev => prev + 3);
+      } else if (command === 'restart') {
+        setRegistrationStep('welcome');
+        setUserData({ name: '', email: '' });
+        setHistory([
+          { isCommand: false, content: "// REGISTRATION RESET", id: nextId + 1 },
+          { isCommand: false, content: "Type 'start' to begin registration or 'help' for commands.", id: nextId + 2 }
+        ]);
+        setNextId(prev => prev + 3);
+      } else if (command === 'back') {
+        if (registrationStep === 'email') {
+          setRegistrationStep('name');
+          addSystemResponse("Returning to previous step.");
+          setTimeout(() => {
+            addSystemResponse("Please enter your full name:");
+          }, 500);
+        } else {
+          addSystemResponse("Cannot go back from current step.");
+        }
+      }
+    };
+    
     // Traiter les commandes selon l'étape
     switch (registrationStep) {
       case 'welcome':
@@ -206,13 +253,9 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
             }, 1500);
           }, 1000);
         } else if (command === 'help') {
-          addSystemResponse("Available commands: 'start' - Begin registration, 'clear' - Clear terminal, 'help' - Show commands");
+          handleUtilityCommandsInternal('help');
         } else if (command === 'clear') {
-          setHistory([
-            { isCommand: false, content: "// TERMINAL CLEARED", id: nextId + 1 },
-            { isCommand: false, content: "Type 'start' to begin registration or 'help' for commands.", id: nextId + 2 }
-          ]);
-          setNextId(prev => prev + 3);
+          handleUtilityCommandsInternal('clear');
         } else {
           addSystemResponse(`Command not recognized: '${cmd}'. Type 'help' for available commands.`);
         }
@@ -220,7 +263,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         
       case 'name':
         if (command === 'help' || command === 'clear' || command === 'restart' || command === 'back') {
-          handleUtilityCommands(command);
+          handleUtilityCommandsInternal(command);
         } else if (cmd.trim().length > 0) {
           // Accepter n'importe quel texte comme nom
           setUserData(prev => ({ ...prev, name: cmd }));
@@ -235,7 +278,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         
       case 'email':
         if (command === 'help' || command === 'clear' || command === 'restart' || command === 'back') {
-          handleUtilityCommands(command);
+          handleUtilityCommandsInternal(command);
         } else if (isValidEmail(cmd)) {
           setUserData(prev => ({ ...prev, email: cmd }));
           addSystemResponse(`Email validated: ${cmd}`);
@@ -254,7 +297,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
             }, 700);
           }, 1500);
         } else {
-          addSystemResponse(`ERROR: Invalid email format. Please enter a valid email address.`);
+          addSystemResponse("Please enter a valid email address.");
         }
         break;
         
@@ -286,7 +329,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
           addSystemResponse("Please enter your email address again:");
           setRegistrationStep('email');
         } else if (command === 'help' || command === 'clear' || command === 'restart') {
-          handleUtilityCommands(command);
+          handleUtilityCommandsInternal(command);
         } else {
           addSystemResponse(`Command not recognized: '${cmd}'. Type 'help' for available commands.`);
         }
@@ -294,68 +337,15 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         
       case 'completed':
         if (command === 'restart') {
-          setRegistrationStep('welcome');
-          setUserData({ name: '', email: '' });
-          setHistory([
-            { isCommand: false, content: "// TERMINAL RESET", id: nextId + 1 },
-            { isCommand: false, content: "Type 'start' to begin registration or 'help' for commands.", id: nextId + 2 }
-          ]);
-          setNextId(prev => prev + 3);
+          handleUtilityCommandsInternal('restart');
         } else if (command === 'help' || command === 'clear') {
-          handleUtilityCommands(command);
+          handleUtilityCommandsInternal(command);
         } else {
           addSystemResponse("Session ended. Refresh to start again.");
         }
         break;
     }
   }, [registrationStep, userData, nextId, addSystemResponse, availableCommands, onSubmit]);
-  
-  // Gestionnaire des commandes utilitaires communes
-  const handleUtilityCommands = (command: string) => {
-    if (command === 'help') {
-      let helpText = "Available commands: ";
-      switch (registrationStep) {
-        case 'welcome':
-          helpText += "'start' - Begin registration, 'clear' - Clear terminal";
-          break;
-        case 'name':
-        case 'email':
-          helpText += "'back' - Go back, 'restart' - Start over, 'clear' - Clear terminal";
-          break;
-        case 'confirm':
-          helpText += "'confirm' - Complete registration, 'edit' - Modify information, 'restart' - Start over";
-          break;
-        case 'completed':
-          helpText += "'restart' - Register another participant, 'clear' - Clear terminal";
-          break;
-      }
-      addSystemResponse(helpText);
-    } else if (command === 'clear') {
-      setHistory([
-        { isCommand: false, content: "// TERMINAL CLEARED", id: nextId + 1 },
-        { isCommand: false, content: "Current step: " + registrationStep, id: nextId + 2 }
-      ]);
-      setNextId(prev => prev + 3);
-    } else if (command === 'restart') {
-      setRegistrationStep('welcome');
-      setUserData({ name: '', email: '' });
-      setHistory([
-        { isCommand: false, content: "// REGISTRATION RESET", id: nextId + 1 },
-        { isCommand: false, content: "Type 'start' to begin registration or 'help' for commands.", id: nextId + 2 }
-      ]);
-      setNextId(prev => prev + 3);
-    } else if (command === 'back') {
-      if (registrationStep === 'email') {
-        setRegistrationStep('name');
-        addSystemResponse("Returning to previous step.");
-        setTimeout(() => {
-          addSystemResponse("Please enter your full name:");
-        }, 500);
-      } else {
-        addSystemResponse("Cannot go back from current step.");
-      }
-    }
-  };
   
   // Validation de l'email
   const isValidEmail = (email: string) => {

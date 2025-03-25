@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 type HolographicEffectProps = {
   children: React.ReactNode;
   className?: string;
-  rotationFactor?: number;
   active?: boolean;
   onOpen?: () => void;
   isOpen?: boolean;
@@ -17,7 +16,6 @@ type HolographicEffectProps = {
 export const HolographicEffect = ({
   children,
   className = '',
-  rotationFactor = 5,
   active = true,
   onOpen,
   isOpen = false,
