@@ -13,11 +13,11 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "Hackathon.dev | Le plus grand hackathon mondial",
-  description: "Rejoignez le plus grand hackathon mondial avec plus de $1M de prix, 72h de coding intense et des participants de plus de 100 pays.",
+  title: "Hackathon.dev | The World's Largest Hackathon",
+  description: "Join the world's largest hackathon with over $1M in prizes, 72 hours of intense coding and participants from more than 100 countries.",
   openGraph: {
-    title: "Hackathon.dev | Le plus grand hackathon mondial",
-    description: "Rejoignez le plus grand hackathon mondial avec plus de $1M de prix, 72h de coding intense et des participants de plus de 100 pays.",
+    title: "Hackathon.dev | The World's Largest Hackathon",
+    description: "Join the world's largest hackathon with over $1M in prizes, 72 hours of intense coding and participants from more than 100 countries.",
     images: [
       {
         url: "/images/hackathon-poster.svg",
@@ -26,13 +26,13 @@ export const metadata: Metadata = {
         alt: "Hackathon.dev Banner",
       },
     ],
-    locale: "fr_FR",
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hackathon.dev | Le plus grand hackathon mondial",
-    description: "Rejoignez le plus grand hackathon mondial avec plus de $1M de prix, 72h de coding intense et des participants de plus de 100 pays.",
+    title: "Hackathon.dev | The World's Largest Hackathon",
+    description: "Join the world's largest hackathon with over $1M in prizes, 72 hours of intense coding and participants from more than 100 countries.",
     images: ["/images/hackathon-poster.svg"],
   },
 };
@@ -43,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <head>
         <link rel="preload" href="/images/hackathon-poster.svg" as="image" />
         <link rel="preload" href="/images/world-map-dots.svg" as="image" />

@@ -1,81 +1,81 @@
-# 🚀 Hackathon.dev - Le plus grand hackathon mondial
+# 🚀 Hackathon.dev - The World's Largest Hackathon
 
 ![Hackathon Banner](/public/images/hackathon-poster.svg)
 
-Ce site web futuriste a été créé pour [Bolt.new](https://bolt.new) dans le cadre de son concours de création de site pour le plus grand hackathon mondial.
+This futuristic website was created for [Bolt.new](https://bolt.new) as part of their website creation contest for the world's largest hackathon.
 
-## 🌟 Caractéristiques
+## 🌟 Features
 
-### 🎨 Design spectaculaire et unique
-- **Style néon cyberpunk** avec des gradients bleus électriques qui ressortent sur un fond sombre
-- **Animation de globe terrestre 3D interactif** avec Three.js qui tourne et évolue dans un champ d'étoiles
-- **Effets visuels** incluant du glitch text, des animations de particules, et des transitions fluides
-- **Polices futuristes** avec Orbitron et Syne pour créer une ambiance tech de pointe
-- **Designs de cartes "glassmorphism"** pour un look moderne et sophistiqué
+### 🎨 Spectacular and unique design
+- **Cyberpunk neon style** with electric blue gradients that stand out on a dark background
+- **Interactive 3D globe animation** with Three.js that rotates and evolves in a starfield
+- **Visual effects** including glitch text, particle animations, and smooth transitions
+- **Futuristic fonts** with Orbitron and Syne to create a cutting-edge tech atmosphere
+- **"Glassmorphism" card designs** for a modern and sophisticated look
 
-### ⚡ Sections interactives
-- **Navigation avec détection de scroll** qui met en évidence la section active
-- **Animations au défilement** qui révèlent le contenu progressivement
-- **Cartes interactives** pour les prix et les sponsors avec des effets de survol
-- **Cartes de juges avec info-bulles** révélant plus de détails sur chaque expert
-- **Formulaire d'inscription interactif** avec feedback en temps réel
+### ⚡ Interactive sections
+- **Scroll detection navigation** that highlights the active section
+- **Scroll animations** that progressively reveal content
+- **Interactive cards** for prizes and sponsors with hover effects
+- **Judge cards with tooltips** revealing more details about each expert
+- **Interactive registration form** with real-time feedback
 
-### 🛠️ Technologies utilisées
-- **Next.js 15** - Framework React moderne avec optimisations de performance
-- **Framer Motion** - Bibliothèque d'animations avancées
-- **Three.js / React Three Fiber** - Rendu 3D en WebGL pour le globe terrestre
-- **GSAP (GreenSock)** - Animations avancées et fluides
-- **Shadcn/UI** - Composants stylisés et accessibles
-- **TailwindCSS** - Styling responsive et optimisé
+### 🛠️ Technologies used
+- **Next.js 15** - Modern React framework with performance optimizations
+- **Framer Motion** - Advanced animation library
+- **Three.js / React Three Fiber** - WebGL 3D rendering for the globe
+- **GSAP (GreenSock)** - Advanced and smooth animations
+- **Shadcn/UI** - Styled and accessible components
+- **TailwindCSS** - Responsive and optimized styling
 
 ## 🔧 Installation
 
-1. Clonez ce dépôt:
+1. Clone this repository:
 ```bash
-git clone https://github.com/votre-compte/hackathon-bolt.git
+git clone https://github.com/your-account/hackathon-bolt.git
 cd hackathon-bolt
 ```
 
-2. Installez les dépendances:
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Lancez le serveur de développement:
+3. Start the development server:
 ```bash
 npm run dev
 ```
 
-4. Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🏗️ Structure du projet
+## 🏗️ Project structure
 
 ```
 hackathon-bolt/
-├── public/          # Assets statiques
-│   └── images/      # Images, incluant la texture du globe
+├── public/          # Static assets
+│   └── images/      # Images, including globe texture
 ├── src/             
-│   ├── app/         # Route principale et mise en page
-│   ├── components/  # Composants réutilisables
-│   └── lib/         # Utilitaires et configurations
+│   ├── app/         # Main route and layout
+│   ├── components/  # Reusable components
+│   └── lib/         # Utilities and configurations
 ```
 
-## 🎭 Design différenciant
+## 🎭 Differentiating design
 
-Ce site se distingue par:
+This site stands out with:
 
-1. **Globe terrestre 3D interactif** qui représente visuellement la nature mondiale du hackathon et crée une première impression mémorable
-2. **Éléments de design futuristes** inspirés des interfaces technologiques de science-fiction
-3. **Animation binaire** dans la section d'inscription évoquant le code informatique
-4. **Effets glitch** sur les textes principaux pour un effet cyberpunk
-5. **Cartes et sections en glassmorphism** créant un effet de profondeur inhabituel
-6. **Palette de couleurs bleue électrique** contrastant avec un fond sombre pour une lisibilité excellente
-7. **Transitions fluides et animations subtiles** qui guident l'utilisateur à travers le site
+1. **Interactive 3D globe** that visually represents the global nature of the hackathon and creates a memorable first impression
+2. **Futuristic design elements** inspired by sci-fi technology interfaces
+3. **Binary animation** in the registration section evoking computer code
+4. **Glitch effects** on main texts for a cyberpunk effect
+5. **Glassmorphism cards and sections** creating an unusual depth effect
+6. **Electric blue color palette** contrasting with a dark background for excellent readability
+7. **Smooth transitions and subtle animations** that guide the user through the site
 
-## 🧠 Inspiration et concept
+## 🧠 Inspiration and concept
 
-Le design s'inspire des interfaces futuristes des films de science-fiction comme Tron, Blade Runner et Ghost in the Shell, créant une ambiance technologique et avant-gardiste qui correspond parfaitement à l'esprit d'innovation d'un hackathon mondial.
+The design is inspired by futuristic interfaces from science fiction movies like Tron, Blade Runner and Ghost in the Shell, creating a technological and avant-garde atmosphere that perfectly matches the spirit of innovation of a global hackathon.
 
 ---
 
-Créé avec 💙 pour le concours Bolt.new | By [Votre nom]
+Created with 💙 for the Bolt.new contest | By [Your name]
