@@ -19,6 +19,25 @@ const backgroundStars = [
   { top: 3.00, left: 66.54 }
 ];
 
+// Données fixes pour les étoiles filantes
+const shootingStars = [
+  { 
+    startTop: 0, endTop: 100, 
+    startLeft: 62.49, endLeft: 99.47,
+    duration: 2.5, repeatDelay: 3.2 
+  },
+  { 
+    startTop: 0, endTop: 100, 
+    startLeft: 7.70, endLeft: 83.12,
+    duration: 3.1, repeatDelay: 4.5 
+  },
+  { 
+    startTop: 0, endTop: 100, 
+    startLeft: 23.41, endLeft: 60.23,
+    duration: 2.8, repeatDelay: 5.7 
+  }
+];
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const [activeSection, setActiveSection] = useState<number | null>(null);
@@ -412,25 +431,25 @@ export default function Footer() {
       
       {/* Étoiles filantes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(3)].map((_, i) => (
+        {shootingStars.map((star, i) => (
           <motion.div
             key={i}
             className="absolute w-[1px] h-[1px] bg-white"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${star.startTop}%`,
+              left: `${star.startLeft}%`,
             }}
             animate={{
-              top: ["0%", "100%"],
-              left: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
+              top: [`${star.startTop}%`, `${star.endTop}%`],
+              left: [`${star.startLeft}%`, `${star.endLeft}%`],
               width: [1, 3, 1],
               height: [1, 50, 1],
               opacity: [0, 1, 0],
             }}
             transition={{
-              duration: 1.5 + Math.random() * 2,
+              duration: star.duration,
               repeat: Infinity,
-              repeatDelay: Math.random() * 5 + 2,
+              repeatDelay: star.repeatDelay,
               ease: "easeInOut",
             }}
           />
