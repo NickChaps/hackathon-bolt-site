@@ -9,7 +9,6 @@ import gsap from 'gsap';
 
 // Importer nos nouveaux composants
 import CircuitBackground from './CircuitBackground';
-import { HolographicEffect, HolographicInterface } from './HolographicEffect';
 
 // Composant globe 3D amélioré
 function Globe() {
@@ -130,8 +129,6 @@ export default function HeroSection() {
           <pointLight position={[10, 10, 10]} intensity={1} />
           <CircuitBackground />
           <Globe />
-          <HolographicInterface />
-          <HolographicEffect />
           <Environment preset="night" />
         </Canvas>
       </div>
@@ -200,20 +197,63 @@ export default function HeroSection() {
           >
             <a 
               href="#register" 
-              className="relative group px-8 py-4 bg-accent-blue text-white font-bold rounded-lg overflow-hidden hover:shadow-[0_0_25px_rgba(20,136,252,0.7)] transition-all duration-300 z-0"
+              className="group relative overflow-hidden px-8 py-4 rounded-lg font-bold transition-all duration-300"
             >
-              <span className="relative z-10">Register Now</span>
-              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-accent-blue to-accent-blue-light transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out z-0"></span>
+              {/* Fond du bouton avec effet de glow */}
+              <span className="absolute inset-0 bg-gradient-to-r from-accent-blue to-accent-blue-light opacity-90 group-hover:opacity-100 transition-opacity duration-300"></span>
               
-              {/* Effet de particules au survol */}
-              <span className="absolute -top-10 left-0 w-full h-20 bg-accent-blue-light opacity-0 group-hover:opacity-20 blur-xl transform translate-y-10 group-hover:translate-y-0 transition-all duration-700"></span>
+              {/* Effet de brillance au hover */}
+              <span className="absolute inset-0 w-full h-full shine-effect opacity-0 group-hover:opacity-100"></span>
+              
+              {/* Animation de pulse autour du bouton */}
+              <span className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-accent-blue to-accent-blue-light blur-md group-hover:animate-pulse"></span>
+              </span>
+              
+              {/* Effet de particules au hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-white rounded-full"
+                    style={{
+                      left: `${20 + i * 15}%`,
+                      top: `${30 + (i % 3) * 20}%`,
+                    }}
+                    animate={{
+                      y: [0, -10],
+                      x: [0, (i % 2 === 0 ? 5 : -5)],
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: 1 + (i * 0.2),
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      ease: "easeOut"
+                    }}
+                  />
+                ))}
+              </div>
+              
+              <span className="relative z-10 text-white">Register Now</span>
             </a>
             
             <a 
               href="#about" 
-              className="px-8 py-4 border border-white/20 text-white hover:bg-white/10 hover:border-accent-blue/50 transition-all rounded-lg backdrop-blur-sm"
+              className="group relative overflow-hidden px-8 py-4 rounded-lg font-medium transition-all duration-300 bg-white/5 border border-white/10 hover:border-accent-blue/30 backdrop-blur-sm"
             >
-              Learn More
+              {/* Effet de hover avec background subtil */}
+              <span className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+              
+              {/* Lignes de circuit animées */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-30">
+                <span className="absolute top-0 left-1/4 w-[1px] h-0 bg-accent-blue-light group-hover:h-full transition-all duration-700 delay-100"></span>
+                <span className="absolute bottom-0 right-1/4 w-[1px] h-0 bg-accent-blue-light group-hover:h-full transition-all duration-700 delay-200"></span>
+                <span className="absolute left-0 top-1/3 h-[1px] w-0 bg-accent-blue-light group-hover:w-full transition-all duration-700 delay-150"></span>
+                <span className="absolute right-0 bottom-1/3 h-[1px] w-0 bg-accent-blue-light group-hover:w-full transition-all duration-700 delay-250"></span>
+              </div>
+              
+              <span className="relative z-10 text-white group-hover:text-accent-blue-light transition-colors duration-300">Learn More</span>
             </a>
           </motion.div>
         </motion.div>

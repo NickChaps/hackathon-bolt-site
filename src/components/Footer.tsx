@@ -76,11 +76,11 @@ export default function Footer() {
   // Réseaux sociaux
   const socialLinks = [
     { 
-      name: 'Twitter', 
+      name: 'X', 
       href: '#',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M23 3.01006C22.0424 3.68553 20.9821 4.20217 19.86 4.54006C19.2577 3.84757 18.4573 3.35675 17.567 3.13398C16.6767 2.91122 15.7395 2.96725 14.8821 3.29451C14.0247 3.62177 13.2884 4.20446 12.773 4.96377C12.2575 5.72309 11.9877 6.62239 12 7.54006V8.54006C10.2426 8.58562 8.50127 8.19587 6.93101 7.4055C5.36074 6.61513 4.01032 5.44869 3 4.01006C3 4.01006 -1 13.0101 8 17.0101C5.94053 18.408 3.48716 19.109 1 19.0101C10 24.0101 21 19.0101 21 7.51006C20.9991 7.23151 20.9723 6.95365 20.92 6.68006C21.9406 5.67355 22.6608 4.40277 23 3.01006Z"/>
+          <path d="M14.2833 10.1224L21.9691 1H20.1555L13.5409 8.92593L8.27119 1H1L9.14671 13.3041L1 23H2.81358L9.88908 14.5004L15.5133 23H22.7845L14.2829 10.1224H14.2833ZM10.7312 13.4307L9.89374 12.1853L3.6018 2.76033H7.2141L12.2233 10.2466L13.0612 11.4921L19.6476 21.3498H16.0349L10.7312 13.4311V13.4307Z"/>
         </svg>
       ) 
     },
@@ -118,8 +118,72 @@ export default function Footer() {
       {/* Ligne décorative */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent-blue to-transparent opacity-30"></div>
       
-      {/* Effet de grille 3D */}
-      <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none"></div>
+      {/* Circuit imprimé holographique au lieu de l'effet de grille 3D */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Fond de circuit */}
+        <div className="absolute inset-0 opacity-5 circuit-pattern"></div>
+        
+        {/* Lignes horizontales */}
+        {[...Array(5)].map((_, i) => (
+          <motion.div 
+            key={`h-${i}`}
+            className="absolute left-0 right-0 h-[1px] bg-accent-blue/20"
+            style={{ top: `${15 + i * 15}%` }}
+            animate={{
+              opacity: [0.1, 0.3, 0.1],
+              boxShadow: ['0 0 0px transparent', '0 0 3px rgba(138, 218, 255, 0.3)', '0 0 0px transparent']
+            }}
+            transition={{
+              duration: 3 + i,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+        
+        {/* Lignes verticales */}
+        {[...Array(7)].map((_, i) => (
+          <motion.div 
+            key={`v-${i}`}
+            className="absolute top-0 bottom-0 w-[1px] bg-accent-blue/20"
+            style={{ left: `${10 + i * 12}%` }}
+            animate={{
+              opacity: [0.1, 0.25, 0.1],
+              boxShadow: ['0 0 0px transparent', '0 0 2px rgba(138, 218, 255, 0.2)', '0 0 0px transparent']
+            }}
+            transition={{
+              duration: 4 + (i % 3),
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.5
+            }}
+          />
+        ))}
+        
+        {/* Noeuds du circuit */}
+        {[...Array(12)].map((_, i) => {
+          const top = 10 + Math.floor(i / 4) * 30;
+          const left = 15 + (i % 4) * 25;
+          
+          return (
+            <motion.div 
+              key={`node-${i}`}
+              className="absolute w-1.5 h-1.5 rounded-full bg-accent-blue/30"
+              style={{ top: `${top}%`, left: `${left}%` }}
+              animate={{
+                opacity: [0.3, 0.7, 0.3],
+                boxShadow: ['0 0 2px rgba(138, 218, 255, 0.3)', '0 0 8px rgba(138, 218, 255, 0.5)', '0 0 2px rgba(138, 218, 255, 0.3)']
+              }}
+              transition={{
+                duration: 2 + (i % 4),
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: i * 0.3
+              }}
+            />
+          );
+        })}
+      </div>
       
       {/* Éléments décoratifs */}
       <motion.div 
@@ -141,25 +205,6 @@ export default function Footer() {
       />
       
       <div className="container mx-auto px-4 relative z-10">
-        {/* Logo flottant en haut */}
-        <motion.div
-          className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-5 pointer-events-none"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 0.05, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <svg width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M30 10L60 25V55L30 70L0 55V25L30 10Z" fill="url(#footerGradient)" />
-            <text x="110" y="35" fontFamily="monospace" fontSize="24" fontWeight="bold" fill="#8adaff" textAnchor="middle">HACKATHON.DEV</text>
-            <defs>
-              <linearGradient id="footerGradient" x1="0" y1="0" x2="60" y2="70" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#1488fc" />
-                <stop offset="1" stopColor="#8adaff" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </motion.div>
-        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
           {/* Logo et info */}
           <motion.div 
@@ -207,7 +252,66 @@ export default function Footer() {
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <span className="font-heading">HACKATHON</span>
+                <motion.span 
+                  className="font-heading relative inline-block"
+                  initial={{ opacity: 1 }}
+                  whileHover="glitchIntense"
+                >
+                  <span className="relative z-10">HACKATHON</span>
+                  {/* Effet de glitch permanent léger */}
+                  <motion.div
+                    className="absolute inset-0 z-0"
+                    animate={{
+                      opacity: [0, 0.3, 0, 0.2, 0, 0.1, 0],
+                      x: [0, -1, 1, 0, 1, -1, 0],
+                      y: [0, 0.5, -0.5, 0, -0.3, 0.3, 0]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <span className="absolute text-[#ff2a6d]/30 left-[0.5px] top-[-0.3px]">HACKATHON</span>
+                    <span className="absolute text-[#05d9e8]/30 left-[-0.7px] top-[0.3px]">HACKATHON</span>
+                  </motion.div>
+                  
+                  {/* Effet de glitch intense au survol */}
+                  <motion.div
+                    className="absolute inset-0 opacity-0 z-0"
+                    variants={{
+                      glitchIntense: {
+                        opacity: [0, 1, 0, 1, 0, 1, 0],
+                        x: [0, -2, 3, -1, 2, -1, 0],
+                        y: [0, 1, -1, 1, 0, -1, 0],
+                        transition: {
+                          duration: 0.4,
+                          repeat: Infinity,
+                          repeatType: "reverse"
+                        }
+                      }
+                    }}
+                  >
+                    <span className="absolute text-[#ff2a6d] left-[0.5px] top-[-0.5px]">HACKATHON</span>
+                    <span className="absolute text-[#05d9e8] left-[-1px] top-[0.5px]">HACKATHON</span>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="absolute bottom-0 left-0 right-0 h-[1px] bg-accent-blue-light"
+                    animate={{
+                      scaleX: [0, 1, 1, 0],
+                      opacity: [0, 1, 1, 0],
+                      left: [0, 0, 0, '100%']
+                    }}
+                    transition={{
+                      times: [0, 0.4, 0.6, 1],
+                      duration: 3,
+                      repeat: Infinity,
+                      repeatDelay: 2
+                    }}
+                  />
+                </motion.span>
                 <span className="text-accent-blue-light drop-shadow-glow">.DEV</span>
               </motion.span>
             </div>
@@ -244,7 +348,9 @@ export default function Footer() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-4 md:mt-0"
           >
-            <h4 className="text-white font-bold text-lg mb-5 pb-2 border-b border-white/10">Navigation</h4>
+            <div className="mb-5">
+              <h4 className="text-white font-bold text-lg">Navigation</h4>
+            </div>
             <ul className="space-y-3">
               {navLinks.map((link, i) => (
                 <motion.li 
@@ -279,7 +385,9 @@ export default function Footer() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-4 md:mt-0"
           >
-            <h4 className="text-white font-bold text-lg mb-5 pb-2 border-b border-white/10">Resources</h4>
+            <div className="mb-5">
+              <h4 className="text-white font-bold text-lg">Resources</h4>
+            </div>
             <ul className="space-y-3">
               {legalLinks.map((link, i) => (
                 <motion.li 
@@ -314,7 +422,9 @@ export default function Footer() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-4 md:mt-0"
           >
-            <h4 className="text-white font-bold text-lg mb-5 pb-2 border-b border-white/10">Subscribe</h4>
+            <div className="mb-5">
+              <h4 className="text-white font-bold text-lg">Subscribe</h4>
+            </div>
             <p className="text-muted-light text-md mb-4">
               Get the latest updates about the hackathon directly to your inbox.
             </p>
@@ -429,21 +539,45 @@ export default function Footer() {
         </motion.div>
       </div>
       
-      {/* Étoiles filantes */}
+      {/* Circuit électronique avec impulsions au lieu des étoiles filantes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Chemins de circuit */}
+        <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path 
+            d="M10,20 L30,20 L30,40 L60,40 L60,80 L90,80" 
+            stroke="rgba(77, 162, 255, 0.5)" 
+            strokeWidth="0.2" 
+            fill="none"
+          />
+          <path 
+            d="M5,50 L20,50 L20,70 L50,70 L50,30 L80,30 L80,10" 
+            stroke="rgba(77, 162, 255, 0.5)" 
+            strokeWidth="0.2" 
+            fill="none"
+          />
+          <path 
+            d="M15,80 L40,80 L40,60 L75,60 L75,90" 
+            stroke="rgba(77, 162, 255, 0.5)" 
+            strokeWidth="0.2" 
+            fill="none"
+          />
+        </svg>
+        
+        {/* Impulsions électriques se déplaçant le long des circuits */}
         {shootingStars.map((star, i) => (
           <motion.div
             key={i}
-            className="absolute w-[1px] h-[1px] bg-white"
+            className="absolute w-2 h-2 rounded-full"
             style={{
+              background: "radial-gradient(circle, rgba(138, 218, 255, 0.8) 0%, rgba(20, 136, 252, 0.3) 70%, transparent 100%)",
+              boxShadow: "0 0 10px rgba(138, 218, 255, 0.8)",
               top: `${star.startTop}%`,
               left: `${star.startLeft}%`,
             }}
             animate={{
               top: [`${star.startTop}%`, `${star.endTop}%`],
               left: [`${star.startLeft}%`, `${star.endLeft}%`],
-              width: [1, 3, 1],
-              height: [1, 50, 1],
+              scale: [0.5, 1.5, 0.5],
               opacity: [0, 1, 0],
             }}
             transition={{
@@ -454,6 +588,64 @@ export default function Footer() {
             }}
           />
         ))}
+        
+        {/* Points de soudure clignotants aux intersections */}
+        <motion.div
+          className="absolute w-1 h-1 rounded-full bg-accent-blue-light"
+          style={{ top: "40%", left: "30%" }}
+          animate={{ 
+            opacity: [0.3, 1, 0.3],
+            boxShadow: [
+              "0 0 2px rgba(138, 218, 255, 0.3)", 
+              "0 0 8px rgba(138, 218, 255, 0.8)", 
+              "0 0 2px rgba(138, 218, 255, 0.3)"
+            ]
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        <motion.div
+          className="absolute w-1 h-1 rounded-full bg-accent-blue-light"
+          style={{ top: "70%", left: "50%" }}
+          animate={{ 
+            opacity: [0.3, 1, 0.3],
+            boxShadow: [
+              "0 0 2px rgba(138, 218, 255, 0.3)", 
+              "0 0 8px rgba(138, 218, 255, 0.8)", 
+              "0 0 2px rgba(138, 218, 255, 0.3)"
+            ]
+          }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+        
+        <motion.div
+          className="absolute w-1 h-1 rounded-full bg-accent-blue-light"
+          style={{ top: "30%", left: "80%" }}
+          animate={{ 
+            opacity: [0.3, 1, 0.3],
+            boxShadow: [
+              "0 0 2px rgba(138, 218, 255, 0.3)", 
+              "0 0 8px rgba(138, 218, 255, 0.8)", 
+              "0 0 2px rgba(138, 218, 255, 0.3)"
+            ]
+          }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        
+        {/* Effet holographique en balayage */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-accent-blue/5 to-transparent"
+          animate={{
+            left: ["-100%", "100%"],
+            opacity: [0, 0.15, 0],
+          }}
+          transition={{ 
+            duration: 5, 
+            repeat: Infinity, 
+            repeatDelay: 5, 
+            ease: "easeInOut" 
+          }}
+        />
       </div>
       
       {/* Particules statiques de l'arrière plan */}

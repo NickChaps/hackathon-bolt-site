@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
@@ -111,6 +111,209 @@ const particlesData = [
   { width: 2.4, height: 3.7, left: 18, top: 48, duration: 3.0, delay: 1.6, yMovement: -8 }
 ];
 
+// Autour de la ligne 280, je vais ajuster l'élément de code pour mieux exploiter l'espace vertical
+                {/* Logo/Illustration centrale avec meilleure utilisation de l'espace vertical */}
+                <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 h-full">
+                  <div className="text-8xl gradient-text font-bold opacity-80 drop-shadow-glow mb-2">
+                    &lt;/&gt;
+                  </div>
+                  <div className="text-accent-blue-light text-lg text-center font-mono">
+                    <motion.span
+                      animate={{
+                        opacity: [0.7, 1, 0.7],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      Build. Create. Innovate.
+                    </motion.span>
+                  </div>
+                </div>
+                
+                {/* Code abstrait en arrière-plan sur toute la hauteur */}
+                <div className="absolute inset-0 opacity-10 flex items-center justify-center overflow-hidden text-xs">
+                  <motion.pre 
+                    className="text-accent-blue-light h-full w-full flex items-center justify-center"
+                    animate={{
+                      opacity: [0.3, 1, 0.3],
+                      filter: [
+                        'brightness(0.8) blur(0.5px)', 
+                        'brightness(1.2) blur(0px)', 
+                        'brightness(0.8) blur(0.5px)'
+                      ]
+                    }}
+                    transition={{
+                      duration: 8,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {`function hackathon() {
+  const ideas = generateInnovation();
+  const impact = buildSolution(ideas);
+  const future = transformTech(impact);
+  return future;
+}
+
+// Join us and code the future
+hackathon();`}
+                  </motion.pre>
+                </div>
+
+// Autour de la ligne 330, je vais supprimer ce bloc qui n'est pas utilisé et qui cause des erreurs
+// Supprimer ce bloc:
+// <motion.div 
+//   className="absolute -bottom-6 -right-6 glass rounded-lg shadow-lg border border-white/10 overflow-hidden"
+//   initial={{ opacity: 0, scale: 0.8 }}
+//   animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+//   transition={{ duration: 0.5, delay: 0.6 }}
+//   whileHover={{ 
+//     scale: 1.05,
+//     boxShadow: "0 0 15px rgba(138, 218, 255, 0.3)"
+//   }}
+// >
+
+// Ajouter des étincelles aux coins des cartes (effet de soudure)
+// Créer un composant SparkEffect
+const SparkEffect = () => {
+  const sparkRef = useRef<HTMLDivElement>(null);
+  const [sparks, setSparks] = useState<Array<{ id: number; style: React.CSSProperties }>>([]);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (sparkRef.current) {
+        const width = sparkRef.current.offsetWidth;
+        const height = sparkRef.current.offsetHeight;
+        
+        // Générer une nouvelle étincelle aléatoire
+        const newSpark = {
+          id: Date.now(),
+          style: {
+            left: `${Math.random() * width}px`,
+            top: `${Math.random() * height}px`,
+            opacity: Math.random() * 0.7 + 0.3,
+            animationDuration: `${Math.random() * 0.5 + 0.5}s`
+          }
+        };
+        
+        // Ajouter la nouvelle étincelle et supprimer les anciennes
+        setSparks(prev => [...prev, newSpark].slice(-15));
+      }
+    }, 300);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  return (
+    <div ref={sparkRef} className="spark-container">
+      {sparks.map(spark => (
+        <div key={spark.id} className="spark" style={spark.style} />
+      ))}
+      <div className="corner-spark top-left"></div>
+      <div className="corner-spark top-right"></div>
+      <div className="corner-spark bottom-right"></div>
+      <div className="corner-spark bottom-left"></div>
+    </div>
+  );
+};
+
+// Modification de l'élément de code pour mieux utiliser l'espace vertical
+const CodeElement = () => {
+  return (
+    <div className="h-full w-full flex flex-col bg-black rounded-lg p-4 overflow-hidden relative circuit-border">
+      <SparkEffect />
+      
+      <div className="flex flex-col items-center justify-center h-full">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-6xl font-bold text-white mb-4"
+        >
+          {'</>'}
+        </motion.div>
+        
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="text-center"
+        >
+          <span className="text-accent-blue-light font-mono text-xl">Build.</span>
+          <span className="text-accent-purple font-mono text-xl mx-2">Create.</span>
+          <span className="text-accent-green font-mono text-xl">Innovate.</span>
+        </motion.div>
+      </div>
+      
+      <div className="circuit-line h-[1px] w-full top-1/3 left-0 opacity-30"></div>
+      <div className="circuit-line h-[1px] w-full bottom-1/3 left-0 opacity-30"></div>
+      <div className="circuit-line w-[1px] h-full left-1/3 top-0 opacity-30"></div>
+      <div className="circuit-line w-[1px] h-full right-1/3 top-0 opacity-30"></div>
+    </div>
+  );
+};
+
+// Mise à jour du rendu des statistiques pour ajouter les étincelles
+// Remplacer l'expression JSX standalone par une fonction
+const StatCard = ({ stat, index }: { stat: any; index: number }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref);
+  
+  return (
+    <motion.div 
+      ref={ref}
+      className="relative overflow-hidden bg-zinc-900 p-6 rounded-lg card-border-animation"
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+    >
+      <SparkEffect />
+      <div className="corner-highlight top-left"></div>
+      <div className="corner-highlight top-right"></div>
+      <div className="corner-highlight bottom-right"></div>
+      <div className="corner-highlight bottom-left"></div>
+      <div className="text-2xl sm:text-4xl font-bold mb-2">{stat.number}</div>
+      <div className="text-zinc-400">{stat.label}</div>
+    </motion.div>
+  );
+};
+
+// Définir les variants pour les animations des fonctionnalités
+const featureVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+};
+
+// Mise à jour du rendu des features pour ajouter les étincelles
+// Remplacer l'expression JSX standalone par une fonction
+const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref);
+  
+  return (
+    <motion.div
+      ref={ref}
+      key={index}
+      variants={featureVariants}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+      className="relative overflow-hidden bg-zinc-900 p-6 rounded-lg card-border-animation"
+    >
+      <SparkEffect />
+      <div className="corner-highlight top-left"></div>
+      <div className="corner-highlight top-right"></div>
+      <div className="corner-highlight bottom-right"></div>
+      <div className="corner-highlight bottom-left"></div>
+      <div className="text-xl font-bold mb-2">{feature.title}</div>
+      <div className="text-zinc-400">{feature.description}</div>
+    </motion.div>
+  );
+};
+
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
@@ -196,14 +399,64 @@ export default function AboutSection() {
               </span>
             </motion.div>
             
-            <motion.h3 
-              className="text-4xl md:text-6xl font-bold mb-8 gradient-text"
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-            >
-              Redefining <span className="drop-shadow-glow">Hackathons</span>
-            </motion.h3>
+            {/* Titre avec "HACKATHONS" plus délicat et animé */}
+            <div className="mb-20 relative">
+              <h3 className="text-4xl md:text-6xl font-bold text-white mb-4">
+                Redefining
+              </h3>
+              <div className="relative">
+                {/* Animation subtile de pulsation */}
+                <motion.div 
+                  className="absolute -inset-x-2 -inset-y-1 opacity-40 rounded-lg"
+                  style={{ 
+                    background: 'linear-gradient(90deg, rgba(20,136,252,0.1) 0%, rgba(138,218,255,0.3) 50%, rgba(20,136,252,0.1) 100%)' 
+                  }}
+                  animate={{
+                    opacity: [0.2, 0.4, 0.2],
+                    scale: [0.98, 1.02, 0.98],
+                    filter: ['blur(8px)', 'blur(12px)', 'blur(8px)']
+                  }}
+                  transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <h2 className="relative text-5xl md:text-7xl font-black tracking-wide">
+                  <motion.span 
+                    className="inline-block bg-gradient-to-r from-[#1488fc] via-[#8adaff] to-[#1488fc] bg-clip-text text-transparent"
+                    animate={{
+                      backgroundPosition: ['0% center', '100% center', '0% center'],
+                    }}
+                    transition={{
+                      duration: 8,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    HACKATHONS
+                  </motion.span>
+                </h2>
+                
+                {/* Ligne décorative sous le titre */}
+                <motion.div 
+                  className="h-[2px] mt-4 rounded-full mx-auto w-[60%]"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent, #8adaff, transparent)'
+                  }}
+                  animate={{
+                    opacity: [0.4, 0.8, 0.4],
+                    width: ['40%', '60%', '40%']
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatType: "reverse"
+                  }}
+                />
+              </div>
+            </div>
             
             <motion.p 
               className="text-xl text-muted-light max-w-3xl mx-auto"
@@ -220,47 +473,7 @@ export default function AboutSection() {
         {/* Statistiques avec animation et interaction au survol */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-24">
           {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              className="glass rounded-xl p-6 text-center border border-white/5 hover:border-accent-blue/30 transition-all duration-300 relative overflow-hidden group"
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ 
-                y: -5,
-                transition: { duration: 0.2 }
-              }}
-            >
-              {/* Background glow qui apparait au hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              {/* Icône */}
-              <div className="text-3xl mb-2">{stat.icon}</div>
-              
-              {/* Nombre avec animation de count-up */}
-              <motion.h4 
-                className="text-3xl md:text-5xl font-bold text-white mb-2"
-                initial={{ scale: 0.7 }}
-                animate={isInView ? { scale: 1 } : { scale: 0.7 }}
-                transition={{ 
-                  type: "spring", 
-                  damping: 12, 
-                  delay: 0.3 + index * 0.1 
-                }}
-              >
-                {stat.number}
-              </motion.h4>
-              
-              <p className="text-muted-light group-hover:text-white transition-colors duration-300">{stat.label}</p>
-              
-              {/* Effet de glow qui apparaît au hover */}
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent-blue to-accent-blue-light"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
+            <StatCard key={index} stat={stat} index={index} />
           ))}
         </div>
         
@@ -275,9 +488,45 @@ export default function AboutSection() {
           >
             <div className="aspect-w-1 aspect-h-1 rounded-2xl overflow-hidden gradient-border p-1 border-glow">
               <div className="w-full h-full rounded-xl bg-gradient-to-br from-accent-blue/5 to-black/30 flex items-center justify-center relative">
-                {/* Code abstrait en arrière-plan */}
+                {/* Logo/Illustration centrale avec meilleure utilisation de l'espace vertical */}
+                <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 h-full">
+                  <div className="text-8xl gradient-text font-bold opacity-80 drop-shadow-glow mb-2">
+                    &lt;/&gt;
+                  </div>
+                  <div className="text-accent-blue-light text-lg text-center font-mono">
+                    <motion.span
+                      animate={{
+                        opacity: [0.7, 1, 0.7],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      Build. Create. Innovate.
+                    </motion.span>
+                  </div>
+                </div>
+                
+                {/* Code abstrait en arrière-plan sur toute la hauteur */}
                 <div className="absolute inset-0 opacity-10 flex items-center justify-center overflow-hidden text-xs">
-                  <pre className="text-accent-blue-light">
+                  <motion.pre 
+                    className="text-accent-blue-light h-full w-full flex items-center justify-center"
+                    animate={{
+                      opacity: [0.3, 1, 0.3],
+                      filter: [
+                        'brightness(0.8) blur(0.5px)', 
+                        'brightness(1.2) blur(0px)', 
+                        'brightness(0.8) blur(0.5px)'
+                      ]
+                    }}
+                    transition={{
+                      duration: 8,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
                     {`function hackathon() {
   const ideas = generateInnovation();
   const impact = buildSolution(ideas);
@@ -287,12 +536,7 @@ export default function AboutSection() {
 
 // Join us and code the future
 hackathon();`}
-                  </pre>
-                </div>
-                
-                {/* Logo/Illustration centrale */}
-                <div className="text-8xl gradient-text font-bold opacity-80 float drop-shadow-glow">
-                  &lt;/&gt;
+                  </motion.pre>
                 </div>
                 
                 {/* Particules en arrière-plan */}
@@ -324,7 +568,7 @@ hackathon();`}
             
             {/* Badge flottant avec animation */}
             <motion.div 
-              className="absolute -bottom-6 -right-6 glass rounded-lg px-4 py-2 shadow-lg border border-white/10"
+              className="absolute -bottom-6 -right-6 glass rounded-lg shadow-lg border border-white/10 overflow-hidden"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -333,7 +577,62 @@ hackathon();`}
                 boxShadow: "0 0 15px rgba(138, 218, 255, 0.3)"
               }}
             >
-              <span className="text-accent-blue-light font-bold">Powered by Bolt.new</span>
+              <div className="relative">
+                <SparkEffect />
+                <div className="card-border-animation">
+                  <div className="corner-highlight top-left"></div>
+                  <div className="corner-highlight top-right"></div>
+                  <div className="corner-highlight bottom-right"></div>
+                  <div className="corner-highlight bottom-left"></div>
+                </div>
+              </div>
+            
+              {/* Liseré lumineux animé */}
+              <motion.div 
+                className="absolute h-1 bg-gradient-to-r from-transparent via-accent-blue-light to-transparent"
+                style={{ width: '100%', top: 0, left: 0 }}
+                animate={{
+                  left: ['-100%', '100%'],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
+              
+              {/* Contenu horizontal */}
+              <div className="py-2 px-4 flex items-center justify-center gap-2">
+                <span className="text-accent-blue-light font-medium">Powered by</span>
+                <span className="gradient-text font-bold text-lg">Bolt.new</span>
+                <motion.div
+                  animate={{ 
+                    boxShadow: [
+                      "0 0 0px 0px rgba(136, 58, 234, 0)",
+                      "0 0 10px 2px rgba(136, 58, 234, 0.8)",
+                      "0 0 5px 1px rgba(0, 191, 255, 0.5)",
+                      "0 0 0px 0px rgba(136, 58, 234, 0)"
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, repeatType: "loop" }}
+                  className="h-2 w-2 rounded-full bg-accent-purple"
+                />
+              </div>
+              
+              {/* Liseré lumineux animé (bas) avec deux couleurs */}
+              <motion.div 
+                className="absolute h-1 bg-gradient-to-r from-transparent via-[#ff8a3d] via-30% via-accent-blue-light via-70% to-transparent"
+                style={{ width: '100%', bottom: 0, right: 0 }}
+                animate={{
+                  right: ['100%', '-100%'],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "linear",
+                  delay: 1
+                }}
+              />
             </motion.div>
           </motion.div>
           
@@ -361,20 +660,7 @@ hackathon();`}
             {/* Fonctionnalités en grille */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="glass p-5 rounded-xl border border-white/5 hover:border-accent-blue/30 transition-all duration-300 group"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ duration: 0.5, delay: 0.2 + feature.delay }}
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="w-10 h-10 rounded-full bg-accent-blue/20 flex items-center justify-center text-accent-blue-light mb-4 group-hover:bg-accent-blue/30 transition-colors">
-                    {feature.icon}
-                  </div>
-                  <h4 className="text-xl font-bold text-white mb-2 group-hover:text-accent-blue-light transition-colors">{feature.title}</h4>
-                  <p className="text-muted-light">{feature.description}</p>
-                </motion.div>
+                <FeatureCard key={index} feature={feature} index={index} />
               ))}
             </div>
           </div>
@@ -405,7 +691,7 @@ hackathon();`}
               >
                 <button
                   onClick={() => toggleFaq(index)}
-                  className={`w-full text-left p-5 rounded-lg flex justify-between items-center transition-all duration-300 ${
+                  className={`w-full text-left p-5 rounded-${expandedFaq === index ? 't-' : ''}lg flex justify-between items-center transition-all duration-300 ${
                     expandedFaq === index 
                     ? 'bg-accent-blue/20 text-white border-accent-blue/40' 
                     : 'bg-white/5 text-muted-light hover:bg-white/10 border-white/10'
@@ -426,8 +712,8 @@ hackathon();`}
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
                     >
-                      <div className="p-5 bg-white/5 rounded-b-lg border-x border-b border-accent-blue/20">
-                        <p className="text-muted-light">{item.answer}</p>
+                      <div className="p-5 bg-accent-blue/10 rounded-b-lg border-x border-b border-accent-blue/40 text-white">
+                        <p className="text-white/80">{item.answer}</p>
                       </div>
                     </motion.div>
                   )}

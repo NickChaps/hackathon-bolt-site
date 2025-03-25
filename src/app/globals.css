@@ -21,6 +21,8 @@
   --font-body: var(--font-space-grotesk);
   --glitch-offset: 5px;
   --glitch-blur: 3px;
+  --terminal-cursor-blink: 530ms;
+  --terminal-scan-duration: 2s;
   
   /* Variables de couleur et thèmes */
   --color-background: var(--background);
@@ -328,6 +330,8 @@
   .grid-bg {
     position: relative;
     overflow: hidden;
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   }
   
   .grid-bg::before {
@@ -345,6 +349,636 @@
     transform: perspective(500px) rotateX(60deg);
     transform-origin: center bottom;
     opacity: 0.3;
+  }
+  
+  /* Styles pour le terminal futuriste */
+  .scrollbar-terminal::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .scrollbar-terminal::-webkit-scrollbar-track {
+    background: rgba(10, 10, 10, 0.3);
+  }
+  
+  .scrollbar-terminal::-webkit-scrollbar-thumb {
+    background: var(--accent-blue);
+    border-radius: 10px;
+  }
+  
+  .scrollbar-terminal::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-blue-light);
+    box-shadow: 0 0 10px var(--accent-blue);
+  }
+  
+  @keyframes terminal-scan {
+    0% {
+      top: 0;
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0.7;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+  
+  @keyframes terminal-typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+  
+  @keyframes terminal-cursor-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  
+  @keyframes data-analysis {
+    0% {
+      filter: hue-rotate(0deg) brightness(1);
+      box-shadow: 0 0 5px var(--accent-blue-light);
+    }
+    50% {
+      filter: hue-rotate(180deg) brightness(1.5);
+      box-shadow: 0 0 15px var(--accent-blue-light);
+    }
+    100% {
+      filter: hue-rotate(360deg) brightness(1);
+      box-shadow: 0 0 5px var(--accent-blue-light);
+    }
+  }
+  
+  .terminal-scan {
+    animation: terminal-scan var(--terminal-scan-duration) linear forwards;
+  }
+  
+  .terminal-cursor {
+    animation: terminal-cursor-blink var(--terminal-cursor-blink) step-end infinite;
+  }
+  
+  .terminal-analysis {
+    animation: data-analysis 3s infinite;
+  }
+  
+  /* Effets de soudure */
+  @keyframes soldering-light {
+    0% {
+      opacity: 0.3;
+      box-shadow: 0 0 5px rgba(138, 218, 255, 0.3);
+    }
+    50% {
+      opacity: 1;
+      box-shadow: 0 0 15px rgba(138, 218, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+      opacity: 0.3;
+      box-shadow: 0 0 5px rgba(138, 218, 255, 0.3);
+    }
+  }
+  
+  @keyframes soldering-horizontal {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  @keyframes soldering-vertical {
+    0% {
+      background-position: 0 -200%;
+    }
+    100% {
+      background-position: 0 200%;
+    }
+  }
+  
+  .soldering-effect-h {
+    background: linear-gradient(90deg, transparent, var(--accent-blue-light), transparent);
+    background-size: 200% 100%;
+    animation: soldering-horizontal 8s linear infinite, soldering-light 2s ease-in-out infinite;
+  }
+  
+  .soldering-effect-v {
+    background: linear-gradient(180deg, transparent, var(--accent-blue-light), transparent);
+    background-size: 100% 200%;
+    animation: soldering-vertical 6s linear infinite, soldering-light 2s ease-in-out infinite;
+  }
+  
+  .card-border-animation .top-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue-light), transparent);
+    background-size: 200% 100%;
+    animation: soldering-horizontal 8s linear infinite;
+  }
+  
+  .card-border-animation .right-border {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--accent-blue-light), transparent);
+    background-size: 100% 200%;
+    animation: soldering-vertical 6s linear infinite;
+    animation-delay: 2s;
+  }
+  
+  .card-border-animation .bottom-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue-light), transparent);
+    background-size: 200% 100%;
+    animation: soldering-horizontal 8s linear infinite reverse;
+    animation-delay: 4s;
+  }
+  
+  .card-border-animation .left-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--accent-blue-light), transparent);
+    background-size: 100% 200%;
+    animation: soldering-vertical 6s linear infinite reverse;
+    animation-delay: 6s;
+  }
+  
+  .card-hover-glow:hover {
+    box-shadow: 0 0 15px rgba(138, 218, 255, 0.3), inset 0 0 5px rgba(138, 218, 255, 0.1);
+    border-color: rgba(138, 218, 255, 0.5);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Amélioration des effets de soudure */
+  @keyframes spark-glow {
+    0% {
+      opacity: 0;
+      filter: blur(0px);
+      transform: scale(0.2);
+    }
+    20% {
+      opacity: 1;
+      filter: blur(1px);
+      transform: scale(1.5);
+    }
+    40% {
+      opacity: 0.8;
+      filter: blur(2px);
+      transform: scale(1);
+    }
+    60% {
+      opacity: 1;
+      filter: blur(1px);
+      transform: scale(1.2);
+    }
+    100% {
+      opacity: 0;
+      filter: blur(0px);
+      transform: scale(0.2);
+    }
+  }
+  
+  @keyframes corner-spark {
+    0% {
+      box-shadow: 0 0 0px rgba(255, 255, 255, 0);
+    }
+    25% {
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.9), 0 0 20px rgba(138, 218, 255, 0.6);
+    }
+    50% {
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5), 0 0 15px rgba(138, 218, 255, 0.3);
+    }
+    75% {
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(138, 218, 255, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0px rgba(255, 255, 255, 0);
+    }
+  }
+  
+  @keyframes circuit-pulse {
+    0% {
+      opacity: 0.2;
+      filter: hue-rotate(0deg);
+    }
+    50% {
+      opacity: 1;
+      filter: hue-rotate(45deg);
+    }
+    100% {
+      opacity: 0.2;
+      filter: hue-rotate(0deg);
+    }
+  }
+  
+  .spark {
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    animation: spark-glow 0.8s ease-out forwards;
+    z-index: 10;
+  }
+  
+  .spark-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .corner-spark {
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    position: absolute;
+    animation: corner-spark 1.5s ease-out infinite;
+    z-index: 10;
+  }
+  
+  .corner-spark.top-left {
+    top: -1px;
+    left: -1px;
+  }
+  
+  .corner-spark.top-right {
+    top: -1px;
+    right: -1px;
+  }
+  
+  .corner-spark.bottom-right {
+    bottom: -1px;
+    right: -1px;
+  }
+  
+  .corner-spark.bottom-left {
+    bottom: -1px;
+    left: -1px;
+  }
+  
+  /* Améliorations pour les cartes avec animation de circuit */
+  .circuit-border {
+    position: relative;
+    border: 1px solid rgba(138, 218, 255, 0.3);
+    border-radius: var(--radius);
+    box-shadow: 0 0 5px rgba(138, 218, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .circuit-border:hover {
+    border-color: rgba(138, 218, 255, 0.6);
+    box-shadow: 0 0 15px rgba(138, 218, 255, 0.3);
+  }
+  
+  .circuit-line {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, var(--accent-blue-light), transparent);
+    opacity: 0.6;
+    animation: circuit-pulse 3s infinite;
+  }
+  
+  .card-border-animation .corner-highlight {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-blue-light);
+    border-radius: 50%;
+    opacity: 0;
+    animation: corner-spark 4s ease-in-out infinite;
+  }
+  
+  .card-border-animation .corner-highlight.top-left {
+    top: -2px;
+    left: -2px;
+  }
+  
+  .card-border-animation .corner-highlight.top-right {
+    top: -2px;
+    right: -2px;
+  }
+  
+  .card-border-animation .corner-highlight.bottom-right {
+    bottom: -2px;
+    right: -2px;
+  }
+  
+  .card-border-animation .corner-highlight.bottom-left {
+    bottom: -2px;
+    left: -2px;
+  }
+  
+  /* Styles pour l'effet holographique */
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  .perspective-2000 {
+    perspective: 2000px;
+  }
+  
+  /* Animation de particules holographiques */
+  @keyframes float-particle {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(-50px) translateX(20px);
+      opacity: 0;
+    }
+  }
+  
+  .holographic-particle {
+    position: absolute;
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-blue-light));
+    border-radius: 50%;
+    filter: blur(0.5px);
+    animation: float-particle 2s ease-out forwards;
+  }
+  
+  .holographic-reflection {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 25%, rgba(255, 255, 255, 0.1) 50%, transparent 75%);
+    background-size: 250% 250%;
+    animation: move-reflection 3s linear infinite;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  
+  @keyframes move-reflection {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+  
+  /* Effet d'hologramme scintillant */
+  .holographic-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, var(--accent-blue-light) 20%, transparent 30%, var(--accent-blue) 50%, transparent 70%, var(--accent-blue-light) 80%, transparent);
+    background-size: 200% 200%;
+    opacity: 0;
+    animation: holo-shine 5s ease-in-out infinite;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  
+  @keyframes holo-shine {
+    0% {
+      opacity: 0;
+      background-position: 0% 50%;
+    }
+    25% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0;
+      background-position: 100% 50%;
+    }
+    100% {
+      opacity: 0;
+      background-position: 0% 50%;
+    }
+  }
+  
+  /* Effet de projection holographique */
+  .holo-projection {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(transparent, rgba(138, 218, 255, 0.03) 1px, transparent 2px);
+    mix-blend-mode: screen;
+    pointer-events: none;
+    opacity: 0.2;
+  }
+  
+  .card-hover-glow:hover::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(to right, var(--accent-blue), var(--accent-blue-light));
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0.3;
+    animation: pulse-border 2s infinite;
+  }
+  
+  @keyframes pulse-border {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+  
+  /* Améliorations des effets holographiques */
+  @keyframes holographic-shine {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+  
+  @keyframes holographic-pulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+  }
+  
+  @keyframes data-stream {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 100%;
+    }
+  }
+  
+  @keyframes scan-line {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+  
+  /* Effets avancés pour les cartes de prix */
+  .prize-card-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(77, 162, 255, 0.2),
+      rgba(138, 218, 255, 0.3),
+      rgba(77, 162, 255, 0.2),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: holographic-shine 3s linear infinite;
+    pointer-events: none;
+    z-index: 5;
+  }
+  
+  .holographic-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(to right, rgba(77, 162, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(77, 162, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .holographic-card {
+    position: relative;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .holographic-card:hover .holographic-grid {
+    opacity: 0.5;
+  }
+  
+  .holographic-card:hover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent, rgba(77, 162, 255, 0.2), transparent);
+    z-index: 1;
+    animation: holographic-pulse 2s ease-in-out infinite;
+  }
+  
+  .scan-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, 
+      rgba(77, 162, 255, 0), 
+      rgba(77, 162, 255, 0.5), 
+      rgba(138, 218, 255, 0.8), 
+      rgba(77, 162, 255, 0.5), 
+      rgba(77, 162, 255, 0)
+    );
+    box-shadow: 0 0 10px 1px rgba(77, 162, 255, 0.7);
+    z-index: 10;
+    animation: scan-line 2s linear infinite;
+  }
+  
+  .data-stream {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(135deg, transparent 0%, transparent 40%, rgba(77, 162, 255, 0.05) 40%, rgba(77, 162, 255, 0.05) 60%, transparent 60%, transparent 100%);
+    background-size: 4px 4px;
+    z-index: 1;
+    animation: data-stream 20s linear infinite;
+  }
+  
+  /* Animation 3D améliorée pour l'ouverture des cartes */
+  @keyframes card-flip {
+    0% {
+      transform: perspective(1000px) rotateY(0) translateZ(0);
+      opacity: 1;
+    }
+    100% {
+      transform: perspective(1000px) rotateY(180deg) translateZ(50px);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes card-reveal {
+    0% {
+      transform: perspective(1000px) rotateY(-180deg) translateZ(50px);
+      opacity: 0;
+    }
+    100% {
+      transform: perspective(1000px) rotateY(0) translateZ(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Effets de particules holographiques */
+  @keyframes particle-float {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(-50px) translateX(var(--x-offset, 20px));
+      opacity: 0;
+    }
+  }
+  
+  .holographic-particle {
+    position: absolute;
+    background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: particle-float 3s ease-out forwards;
+  }
+  
+  /* Autres classes utilitaires */
+  
+  .circuit-pattern {
+    background-image: 
+      /* Lignes horizontales */
+      linear-gradient(90deg, rgba(138, 218, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(138, 218, 255, 0.02) 1px, transparent 1px),
+      /* Lignes verticales */
+      linear-gradient(rgba(138, 218, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(rgba(138, 218, 255, 0.02) 1px, transparent 1px),
+      /* Points de circuit aux intersections */
+      radial-gradient(rgba(138, 218, 255, 0.1) 1.5px, transparent 1.5px);
+    background-size: 
+      100px 100px,
+      20px 20px,
+      100px 100px,
+      20px 20px,
+      100px 100px;
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      50px 50px;
   }
 }
 

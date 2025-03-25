@@ -20,6 +20,9 @@ export default function NavBar() {
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  
+  // Refs pour les éléments de navigation
+  const navRefs = useRef<Array<HTMLLIElement | null>>([]);
 
   // Effet pour détecter le scroll et changer l'apparence de la navbar
   useEffect(() => {
@@ -128,20 +131,82 @@ export default function NavBar() {
           
           <motion.span 
             className="text-white font-bold text-lg tracking-wider"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
           >
-            <span className="font-heading">HACKATHON</span>
+            <motion.span 
+              className="font-heading relative inline-block"
+              initial={{ opacity: 1 }}
+              whileHover="glitchIntense"
+            >
+              <span className="relative z-10">HACKATHON</span>
+              {/* Effet de glitch permanent léger */}
+              <motion.div
+                className="absolute inset-0 z-0"
+                animate={{
+                  opacity: [0, 0.3, 0, 0.2, 0, 0.1, 0],
+                  x: [0, -1, 1, 0, 1, -1, 0],
+                  y: [0, 0.5, -0.5, 0, -0.3, 0.3, 0]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut"
+                }}
+              >
+                <span className="absolute text-[#ff2a6d]/30 left-[0.5px] top-[-0.3px]">HACKATHON</span>
+                <span className="absolute text-[#05d9e8]/30 left-[-0.7px] top-[0.3px]">HACKATHON</span>
+              </motion.div>
+              
+              {/* Effet de glitch intense au survol */}
+              <motion.div
+                className="absolute inset-0 opacity-0 z-0"
+                variants={{
+                  glitchIntense: {
+                    opacity: [0, 1, 0, 1, 0, 1, 0],
+                    x: [0, -2, 3, -1, 2, -1, 0],
+                    y: [0, 1, -1, 1, 0, -1, 0],
+                    transition: {
+                      duration: 0.4,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }
+                  }
+                }}
+              >
+                <span className="absolute text-[#ff2a6d] left-[0.5px] top-[-0.5px]">HACKATHON</span>
+                <span className="absolute text-[#05d9e8] left-[-1px] top-[0.5px]">HACKATHON</span>
+              </motion.div>
+              
+              <motion.div 
+                className="absolute bottom-0 left-0 right-0 h-[1px] bg-accent-blue-light"
+                animate={{
+                  scaleX: [0, 1, 1, 0],
+                  opacity: [0, 1, 1, 0],
+                  left: [0, 0, 0, '100%']
+                }}
+                transition={{
+                  times: [0, 0.4, 0.6, 1],
+                  duration: 3,
+                  repeat: Infinity,
+                  repeatDelay: 2
+                }}
+              />
+            </motion.span>
             <span className="text-accent-blue-light drop-shadow-glow">.DEV</span>
           </motion.span>
         </Link>
         
         {/* Navigation desktop */}
         <nav className="hidden md:flex">
-          <ul className="flex space-x-2">
-            {navLinks.map((link) => (
-              <li key={link.id}>
+          <ul className="flex space-x-2 relative">
+            {navLinks.map((link, index) => (
+              <li 
+                key={link.id} 
+                ref={(el) => { navRefs.current[index] = el; }}
+                className="relative"
+              >
                 <Link 
                   href={link.href}
                   className={`relative px-4 py-2 rounded-md transition-colors duration-300 group ${
@@ -159,18 +224,33 @@ export default function NavBar() {
                     whileHover={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.2 }}
                   />
-                  
-                  {/* Indicateur de section active */}
-                  {activeSection === link.id && (
-                    <motion.span
-                      className="absolute -bottom-1 left-0 h-[2px] bg-gradient-to-r from-accent-blue to-accent-blue-light w-full rounded-full shadow-glow"
-                      layoutId="activeSection"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
                 </Link>
               </li>
             ))}
+            
+            {/* Liseré bleu animé sous le lien actif */}
+            <motion.div
+              className="absolute h-[2px] bg-gradient-to-r from-accent-blue to-accent-blue-light rounded-full -bottom-1 shadow-[0_0_8px_rgba(20,136,252,0.7)]"
+              layoutId="navIndicator"
+              transition={{ 
+                type: 'spring', 
+                stiffness: 380, 
+                damping: 30 
+              }}
+              style={{
+                width: navRefs.current[navLinks.findIndex(link => link.id === activeSection)]?.offsetWidth || 0,
+                left: (() => {
+                  const activeIndex = navLinks.findIndex(link => link.id === activeSection);
+                  if (activeIndex === -1) return 0;
+                  
+                  const activeElement = navRefs.current[activeIndex];
+                  if (!activeElement) return 0;
+                  
+                  // Calculer la position absolue par rapport au parent (ul)
+                  return activeElement.offsetLeft;
+                })()
+              }}
+            />
           </ul>
         </nav>
         

@@ -238,7 +238,7 @@ export default function JudgesSection() {
                         className="p-2 bg-white/5 rounded-full hover:bg-accent-blue/20 transition-colors"
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M22 4.01C21 4.5 20.02 4.69 19 5C17.879 3.735 16.217 3.665 14.62 4.263C13.023 4.861 11.977 6.323 12 8.01V9.01C8.755 9.083 5.865 7.605 4 5.01C4 5.01 -0.182 12.946 8 16.01C6.128 17.247 4.261 18.088 2 18.01C5.308 19.687 8.913 20.153 12.034 19.278C15.614 18.253 18.556 15.642 19.685 11.496C20.0218 10.1738 20.142 8.8092 20.04 7.453C20.04 7.173 21.89 4.01 22 4.009V4.01Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
                         </svg>
                       </a>
                       <a 
