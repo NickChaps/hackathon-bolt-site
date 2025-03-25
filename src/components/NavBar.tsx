@@ -39,12 +39,10 @@ export default function NavBar() {
   const detectActiveSection = useCallback(() => {
     const currentScrollY = window.scrollY;
     const sections = [...navLinks].reverse().map(link => link.id);
-    let foundSection = false;
     
     for (const section of sections) {
       const element = document.getElementById(section);
       if (element && currentScrollY >= element.offsetTop - 100) {
-        foundSection = true;
         lastActiveSection.current = section;
         return section;
       }
@@ -116,7 +114,7 @@ export default function NavBar() {
   }, [mobileMenuOpen, detectActiveSection]);
   
   // Fermer le menu mobile quand on clique sur un lien
-  const handleMobileLinkClick = (linkId: string, e?: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMobileLinkClick = (linkId: string) => {
     // Définir la section active immédiatement pour un feedback visuel instantané
     setActiveSection(linkId);
     lastActiveSection.current = linkId;
@@ -378,7 +376,7 @@ export default function NavBar() {
                     >
                       <Link 
                         href={link.href}
-                        onClick={(e) => handleMobileLinkClick(link.id, e)}
+                        onClick={() => handleMobileLinkClick(link.id)}
                         className={`block text-center text-xl p-4 rounded-lg ${
                           activeSection === link.id
                             ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
