@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 
 // Types pour les sponsors et catégories
@@ -177,9 +177,9 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
   }, []);
   
   const scale = sponsor.size || 1;
-  // Taille de base du badge en pixels, réduite sur mobile
+  // Taille de base du badge en pixels, plus réduite sur mobile pour une meilleure utilisation de l'espace
   const badgeSize = isMobile 
-    ? 40 * scale 
+    ? 32 * scale  // Taille réduite
     : 56 * scale;
   
   // Afficher le nom au survol et quand actif
@@ -205,7 +205,7 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
       style={{ 
         left: `${position.x}%`, 
         top: `${position.y}%`, 
-        zIndex: isActive || isHovered ? 30 : sponsor.id,
+        zIndex: isActive ? 20 : (isHovered ? 15 : 10),
         transform: 'translate(-50%, -50%)' // Centrer le badge sur la position
       }}
       initial={{ opacity: 0, scale: 0 }}
@@ -258,7 +258,7 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
         <span className="text-xl font-bold" style={{ 
           color: isActive || isHovered ? categoryColor : `${categoryColor}90`,
           filter: isActive || isHovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.8))' : 'none',
-          fontSize: `${Math.max(isMobile ? 16 : 20, isMobile ? 12 : 16 * scale)}px`
+          fontSize: `${Math.max(isMobile ? 14 : 20, isMobile ? 10 : 16 * scale)}px` // Taille de police réduite sur mobile
         }}>
           {sponsor.name.charAt(0)}
         </span>
@@ -288,6 +288,7 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
             minWidth: `${badgeSize * 1.8}px`,
             border: `1px solid ${categoryColor}80`,
             boxShadow: `0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 0 5px ${categoryColor}40`,
+            zIndex: isActive ? 20 : 15
           }}
           initial={{ opacity: 0, y: 0 }}
           animate={{ 
@@ -446,14 +447,15 @@ const SponsorDetailCard: React.FC<SponsorDetailCardProps> = ({
       )}
       
       <motion.div 
-        className={`glass p-6 rounded-xl shadow-glow z-20 ${
+        className={`glass p-6 rounded-xl shadow-glow ${
           isMobile ? 'fixed bottom-4 left-4 right-4 w-auto' : 'absolute'
         }`}
         style={isMobile ? {
           borderWidth: '1px',
           borderStyle: 'solid',
           borderColor: `${category.color}50`,
-          boxShadow: `0 10px 25px -5px ${category.color}40`
+          boxShadow: `0 10px 25px -5px ${category.color}40`,
+          zIndex: 30
         } : { 
           left: `${cardPosition.x}%`,
           top: `${cardPosition.y}%`,
@@ -462,7 +464,8 @@ const SponsorDetailCard: React.FC<SponsorDetailCardProps> = ({
           borderWidth: '1px',
           borderStyle: 'solid',
           borderColor: `${category.color}50`,
-          boxShadow: `0 10px 25px -5px ${category.color}40`
+          boxShadow: `0 10px 25px -5px ${category.color}40`,
+          zIndex: 30
         }}
         initial={isMobile ? { opacity: 0, y: 50 } : { opacity: 0, scale: 0.9 }}
         animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, scale: 1 }}
@@ -574,7 +577,7 @@ interface NetworkGraphProps {
 }
 
 // Composant principal NetworkGraph avec positions fixes (sans simulation continue)
-const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
+const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }): React.ReactElement => {
   const [selectedSponsor, setSelectedSponsor] = useState<number | null>(null);
   const [positions, setPositions] = useState<Record<number, Position>>({});
   const [isPositioned, setIsPositioned] = useState(false);
@@ -591,6 +594,24 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+  
+  // Détecter le scroll pour fermer la carte sur mobile
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isMobile && selectedSponsor !== null && containerRef.current) {
+        // Vérifier si on est en dehors de la section sponsors
+        const rect = containerRef.current.getBoundingClientRect();
+        const isOutsideViewport = rect.bottom < 0 || rect.top > window.innerHeight;
+        
+        if (isOutsideViewport) {
+          setSelectedSponsor(null);
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isMobile, selectedSponsor]);
   
   // Calculer les positions une seule fois au chargement
   useEffect(() => {
@@ -609,18 +630,22 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
       // Trier les nœuds par catégorie pour le positionnement
       const categoryIndex = sponsorNetwork.categories.findIndex(c => c.id === sponsor.category);
       
-      // Sur mobile, on réduit le rayon pour que tout tienne dans l'écran
+      // Ajuster l'espacement pour éviter les recouvrements
       const radiusFactor = isMobile
-        ? 0.5 + (categoryIndex / sponsorNetwork.categories.length) * 0.3
-        : 0.7 + (categoryIndex / sponsorNetwork.categories.length) * 0.3;
+        ? 0.6 + (categoryIndex / sponsorNetwork.categories.length) * 0.3
+        : 0.8 + (categoryIndex / sponsorNetwork.categories.length) * 0.4;
       
       // Rayon adapté à la taille du badge et au type d'appareil
+      // Réduire la randomisation pour plus de contrôle sur le placement
       const radius = isMobile
-        ? 35 * radiusFactor + Math.random() * 5
-        : 25 * radiusFactor + Math.random() * 5;
+        ? 32 * radiusFactor + Math.random() * 2
+        : 30 * radiusFactor + Math.random() * 4;
+      
+      // Sur mobile, décaler légèrement le centre vers la gauche
+      const centerX = isMobile ? 47 : 50;
       
       fixedPositions[sponsor.id] = { 
-        x: 50 + Math.cos(angle) * radius,
+        x: centerX + Math.cos(angle) * radius,
         y: 50 + Math.sin(angle) * radius
       };
     });
@@ -637,7 +662,8 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
   // Fonction pour résoudre les chevauchements en une seule étape
   const resolveOverlaps = (initialPos: Record<number, Position>): Record<number, Position> => {
     const positions = { ...initialPos };
-    const MIN_DISTANCE = 12;
+    // Augmenter la distance minimale pour éviter les recouvrements
+    const MIN_DISTANCE = isMobile ? 14 : 16;
     
     // Distance entre deux positions
     const distance = (pos1: Position, pos2: Position) => {
@@ -645,14 +671,14 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
     };
     
     // Passer sur chaque paire une seule fois et ajuster si nécessaire
-    for (let i = 0; i < 10; i++) { // Limite à 10 itérations maximum
+    for (let i = 0; i < 15; i++) { // Augmenter le nombre d'itérations pour une meilleure résolution
       let overlapsFixed = 0;
       
       sponsorNetwork.nodes.forEach((sponsor1, idx1) => {
         const pos1 = positions[sponsor1.id];
         
         sponsorNetwork.nodes.forEach((sponsor2, idx2) => {
-          if (idx1 >= idx2) return; // Éviter les doublons et auto-comparaisons
+          if (idx1 >= idx2) return;
           
           const pos2 = positions[sponsor2.id];
           const dist = distance(pos1, pos2);
@@ -667,18 +693,23 @@ const NetworkGraph: React.FC<NetworkGraphProps> = ({ isVisible }) => {
             const nx = dx / len;
             const ny = dy / len;
             
-            // Calculer déplacement
-            const moveAmount = (MIN_DISTANCE - dist) / 2 + 0.5;
+            // Ajuster les limites pour un meilleur équilibre entre espace et lisibilité
+            const boundaries = isMobile 
+              ? { min: 20, max: 80 }  // Limites équilibrées sur mobile
+              : { min: 10, max: 90 };
+            
+            // Augmenter légèrement le déplacement pour une meilleure séparation
+            const moveAmount = (MIN_DISTANCE - dist) / 1.8 + 0.8;
             
             // Déplacer en directions opposées
             positions[sponsor1.id] = {
-              x: Math.min(85, Math.max(15, pos1.x - nx * moveAmount)),
-              y: Math.min(85, Math.max(15, pos1.y - ny * moveAmount))
+              x: Math.min(boundaries.max, Math.max(boundaries.min, pos1.x - nx * moveAmount)),
+              y: Math.min(boundaries.max, Math.max(boundaries.min, pos1.y - ny * moveAmount))
             };
             
             positions[sponsor2.id] = {
-              x: Math.min(85, Math.max(15, pos2.x + nx * moveAmount)),
-              y: Math.min(85, Math.max(15, pos2.y + ny * moveAmount))
+              x: Math.min(boundaries.max, Math.max(boundaries.min, pos2.x + nx * moveAmount)),
+              y: Math.min(boundaries.max, Math.max(boundaries.min, pos2.y + ny * moveAmount))
             };
             
             overlapsFixed++;

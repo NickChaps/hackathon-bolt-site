@@ -29,6 +29,7 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Refs pour les éléments de navigation
   const navRefs = useRef<Array<HTMLLIElement | null>>([]);
@@ -107,6 +108,17 @@ export default function NavBar() {
     }, 100);
   };
 
+  // Détecter si on est sur mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <motion.header
       className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
@@ -124,21 +136,28 @@ export default function NavBar() {
           <div className="relative">
             <motion.div
               className="bg-gradient-to-r from-accent-blue to-accent-blue-light w-10 h-10 rounded-md mr-2 flex items-center justify-center overflow-hidden"
-              whileHover={{ 
-                rotate: 180,
-                boxShadow: "0 0 15px rgba(138, 218, 255, 0.5)",
-              }}
-              transition={{ duration: 0.5 }}
+              animate={isMobile ? { 
+                rotate: [0, 180]
+              } : undefined}
+              whileHover={!isMobile ? { 
+                rotate: 180
+              } : undefined}
+              transition={{ duration: 0.5, repeat: isMobile ? Infinity : undefined, repeatDelay: 3 }}
             >
               <motion.div 
                 className="w-6 h-6 bg-background rounded-sm"
-                whileHover={{ scale: 0.8 }}
-                transition={{ duration: 0.3 }}
+                animate={isMobile ? { 
+                  scale: [1, 0.8, 1]
+                } : undefined}
+                whileHover={!isMobile ? { 
+                  scale: 0.8
+                } : undefined}
+                transition={{ duration: 0.3, repeat: isMobile ? Infinity : undefined, repeatDelay: 3 }}
               ></motion.div>
               
-              {/* Particules autour du logo au hover */}
+              {/* Particules autour du logo */}
               <motion.div 
-                className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                className={`absolute inset-0 ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                 transition={{ duration: 0.3 }}
               >
                 {logoParticles.map((particle, i) => (
@@ -168,13 +187,44 @@ export default function NavBar() {
           
           <motion.span 
             className="text-white font-bold text-lg tracking-wider"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400 }}
+            animate={isMobile ? {
+              filter: "brightness(1.2)",
+              textShadow: "0 0 8px rgba(138, 218, 255, 0.5)"
+            } : undefined}
+            transition={isMobile ? {
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut"
+            } : undefined}
+            whileHover={!isMobile ? {
+              filter: "brightness(1.2)",
+              textShadow: "0 0 8px rgba(138, 218, 255, 0.5)"
+            } : undefined}
           >
             <motion.span 
               className="font-heading relative inline-block"
               initial={{ opacity: 1 }}
-              whileHover="glitchIntense"
+              animate={isMobile ? {
+                textShadow: [
+                  "0 0 0px rgba(138, 218, 255, 0)",
+                  "0 0 10px rgba(138, 218, 255, 0.8)",
+                  "0 0 0px rgba(138, 218, 255, 0)"
+                ]
+              } : undefined}
+              transition={isMobile ? {
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              } : undefined}
+              whileHover={!isMobile ? {
+                textShadow: [
+                  "0 0 0px rgba(138, 218, 255, 0)",
+                  "0 0 10px rgba(138, 218, 255, 0.8)",
+                  "0 0 0px rgba(138, 218, 255, 0)"
+                ]
+              } : undefined}
             >
               <span className="relative z-10">HACKATHON</span>
               {/* Effet de glitch permanent léger */}
@@ -186,7 +236,7 @@ export default function NavBar() {
                   y: [0, 0.5, -0.5, 0, -0.3, 0.3, 0]
                 }}
                 transition={{
-                  duration: 4,
+                  duration: isMobile ? 2 : 4,
                   repeat: Infinity,
                   repeatType: "reverse",
                   ease: "easeInOut"
@@ -196,7 +246,7 @@ export default function NavBar() {
                 <span className="absolute text-[#05d9e8]/30 left-[-0.7px] top-[0.3px]">HACKATHON</span>
               </motion.div>
               
-              {/* Effet de glitch intense au survol */}
+              {/* Effet de glitch intense */}
               <motion.div
                 className="absolute inset-0 opacity-0 z-0"
                 variants={{
@@ -211,6 +261,7 @@ export default function NavBar() {
                     }
                   }
                 }}
+                animate={isMobile ? "glitchIntense" : undefined}
               >
                 <span className="absolute text-[#ff2a6d] left-[0.5px] top-[-0.5px]">HACKATHON</span>
                 <span className="absolute text-[#05d9e8] left-[-1px] top-[0.5px]">HACKATHON</span>
@@ -225,9 +276,9 @@ export default function NavBar() {
                 }}
                 transition={{
                   times: [0, 0.4, 0.6, 1],
-                  duration: 3,
+                  duration: isMobile ? 2 : 3,
                   repeat: Infinity,
-                  repeatDelay: 2
+                  repeatDelay: isMobile ? 1 : 2
                 }}
               />
             </motion.span>
