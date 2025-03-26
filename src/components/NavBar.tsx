@@ -80,11 +80,25 @@ export default function NavBar() {
       const currentActiveSection = detectActiveSection();
       setActiveSection(currentActiveSection);
       
-      // Désactiver le défilement
+      // Désactiver le défilement de manière plus robuste
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${window.scrollY}px`;
+      document.body.style.width = '100%';
     } else {
+      // Récupérer la position de défilement
+      const scrollY = document.body.style.top;
+      
       // Réactiver le défilement
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      
+      // Restaurer la position si on a simplement fermé le menu sans cliquer sur un lien
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
       
       // Mettre à jour la section active après fermeture du menu
       if (document.readyState === 'complete') {
@@ -98,6 +112,9 @@ export default function NavBar() {
     return () => {
       // Nettoyage en cas de démontage du composant
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
     };
   }, [mobileMenuOpen, detectActiveSection]);
   
@@ -389,15 +406,15 @@ export default function NavBar() {
       <AnimatePresence mode="wait">
         {mobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-45 md:hidden bg-background/95 backdrop-blur-xl flex items-center justify-center"
+            className="fixed inset-0 z-45 md:hidden bg-background/95 backdrop-blur-xl overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="w-full h-full flex items-center justify-center px-4">
+            <div className="w-full h-full flex items-center justify-center px-4 overflow-hidden">
               <motion.nav 
-                className="w-full max-w-md" 
+                className="w-full max-w-md overflow-auto max-h-screen py-10" 
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 20, opacity: 0 }}
