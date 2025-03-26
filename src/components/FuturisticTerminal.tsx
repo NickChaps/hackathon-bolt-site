@@ -140,7 +140,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
   }, [registrationStep]);
   
   // Animation de frappe pour les réponses système
-  const addSystemResponse = useCallback((content: string) => {
+  const addSystemResponse = useCallback((content: string): Promise<void> => {
     setProcessing(true);
     
     // Diviser le contenu en caractères
@@ -154,24 +154,38 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
     setHistory(tempHistory);
     setNextId(prev => prev + 1);
     
-    // Animer la frappe
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < chars.length) {
-        tempContent += chars[i];
-        setHistory(prev => 
-          prev.map(item => 
-            item.id === responseId 
-              ? { ...item, content: tempContent } 
-              : item
-          )
-        );
-        i++;
-      } else {
-        clearInterval(interval);
-        setProcessing(false);
-      }
-    }, 15);
+    // Retourne une promise qui se résout quand l'animation est terminée
+    return new Promise<void>((resolve) => {
+      // Animer la frappe avec un léger délai pour plus de fluidité
+      setTimeout(() => {
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < chars.length) {
+            tempContent += chars[i];
+            setHistory(prev => 
+              prev.map(item => 
+                item.id === responseId 
+                  ? { ...item, content: tempContent } 
+                  : item
+              )
+            );
+            i++;
+            
+            // Faire défiler automatiquement avec chaque caractère
+            if (historyContainerRef.current) {
+              historyContainerRef.current.scrollTop = historyContainerRef.current.scrollHeight;
+            }
+          } else {
+            clearInterval(interval);
+            // Délai supplémentaire pour éviter des transitions trop rapides
+            setTimeout(() => {
+              setProcessing(false);
+              resolve(); // Résoudre la promesse quand tout est terminé
+            }, 300);
+          }
+        }, 15);
+      }, 200);
+    });
   }, [history, nextId]);
   
   // Gérer les commandes
@@ -231,10 +245,11 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
       } else if (command === 'back') {
         if (registrationStep === 'email') {
           setRegistrationStep('name');
-          addSystemResponse("Returning to previous step.");
-          setTimeout(() => {
-            addSystemResponse("Please enter your full name:");
-          }, 500);
+          (async () => {
+            await addSystemResponse("Returning to previous step.");
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await addSystemResponse("Please enter your full name:");
+          })();
         } else {
           addSystemResponse("Cannot go back from current step.");
         }
@@ -245,13 +260,14 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
     switch (registrationStep) {
       case 'welcome':
         if (command === 'start') {
-          setTimeout(() => {
-            addSystemResponse("Initiating secure registration protocol...");
-            setTimeout(() => {
-              addSystemResponse("Please enter your full name:");
-              setRegistrationStep('name');
-            }, 1500);
-          }, 1000);
+          // Utiliser des await avec async IIFE pour séquencer les messages
+          (async () => {
+            await addSystemResponse("Initiating secure registration protocol...");
+            // Ajouter un délai entre les messages
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addSystemResponse("Please enter your full name:");
+            setRegistrationStep('name');
+          })();
         } else if (command === 'help') {
           handleUtilityCommandsInternal('help');
         } else if (command === 'clear') {
@@ -267,12 +283,14 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         } else if (cmd.trim().length > 0) {
           // Accepter n'importe quel texte comme nom
           setUserData(prev => ({ ...prev, name: cmd }));
-          addSystemResponse(`Name registered: ${cmd}`);
           
-          setTimeout(() => {
-            addSystemResponse("Please enter your email address:");
+          (async () => {
+            await addSystemResponse(`Name registered: ${cmd}`);
+            // Ajouter un délai entre les messages
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addSystemResponse("Please enter your email address:");
             setRegistrationStep('email');
-          }, 1500);
+          })();
         }
         break;
         
@@ -281,21 +299,19 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
           handleUtilityCommandsInternal(command);
         } else if (isValidEmail(cmd)) {
           setUserData(prev => ({ ...prev, email: cmd }));
-          addSystemResponse(`Email validated: ${cmd}`);
           
-          setTimeout(() => {
-            addSystemResponse("Please review your information:");
-            setTimeout(() => {
-              addSystemResponse(`Name: ${userData.name}`);
-              setTimeout(() => {
-                addSystemResponse(`Email: ${cmd}`);
-                setTimeout(() => {
-                  addSystemResponse("Type 'confirm' to complete registration or 'edit' to modify.");
-                  setRegistrationStep('confirm');
-                }, 700);
-              }, 700);
-            }, 700);
-          }, 1500);
+          (async () => {
+            await addSystemResponse(`Email validated: ${cmd}`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addSystemResponse("Please review your information:");
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await addSystemResponse(`Name: ${userData.name}`);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await addSystemResponse(`Email: ${cmd}`);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await addSystemResponse("Type 'confirm' to complete registration or 'edit' to modify.");
+            setRegistrationStep('confirm');
+          })();
         } else {
           addSystemResponse("Please enter a valid email address.");
         }
@@ -303,31 +319,31 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         
       case 'confirm':
         if (command === 'confirm') {
-          addSystemResponse("Processing registration...");
-          
-          setTimeout(() => {
+          (async () => {
+            await addSystemResponse("Processing registration...");
             setScanning(true);
-            setTimeout(() => {
-              setScanning(false);
-              addSystemResponse("Registration successful! Welcome to the World's Largest Hackathon!");
-              setTimeout(() => {
-                addSystemResponse("A confirmation has been sent to your email address.");
-                addSystemResponse("Type 'restart' to register another participant or any key to exit.");
-                setRegistrationStep('completed');
-                // Appeler le callback de soumission
-                onSubmit(userData);
-              }, 1500);
-            }, 2000);
-          }, 1500);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            setScanning(false);
+            await addSystemResponse("Registration successful! Welcome to the World's Largest Hackathon!");
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addSystemResponse("A confirmation has been sent to your email address.");
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await addSystemResponse("Type 'restart' to register another participant or any key to exit.");
+            setRegistrationStep('completed');
+            // Appeler le callback de soumission
+            onSubmit(userData);
+          })();
         } else if (command === 'edit') {
           addSystemResponse("Which field would you like to edit? Type 'name' or 'email'");
           setAvailableCommands(['name', 'email', 'help', 'clear']);
         } else if (command === 'name' && availableCommands.includes('name')) {
-          addSystemResponse("Please enter your full name again:");
-          setRegistrationStep('name');
+          addSystemResponse("Please enter your full name again:").then(() => {
+            setRegistrationStep('name');
+          });
         } else if (command === 'email' && availableCommands.includes('email')) {
-          addSystemResponse("Please enter your email address again:");
-          setRegistrationStep('email');
+          addSystemResponse("Please enter your email address again:").then(() => {
+            setRegistrationStep('email');
+          });
         } else if (command === 'help' || command === 'clear' || command === 'restart') {
           handleUtilityCommandsInternal(command);
         } else {
@@ -402,7 +418,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
   };
   
   return (
-    <div className="relative w-full h-full min-h-[400px] bg-black/30 rounded-lg border border-white/10 font-mono text-accent-blue-light p-4 overflow-hidden">
+    <div className="relative w-full h-full min-h-[500px] bg-black/30 rounded-lg border border-white/10 font-mono text-accent-blue-light p-4 pb-12 overflow-hidden">
       {/* Effet de scan */}
       <AnimatePresence>
         {scanning && (
@@ -422,10 +438,28 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
       {/* Effet de particules */}
       <ParticleEffect />
       
+      {/* Panel d'informations à confirmer */}
+      {registrationStep === 'confirm' && (
+        <div className="absolute top-4 right-4 w-64 glass p-4 rounded-md border border-accent-blue/30 shadow-[0_0_15px_rgba(20,136,252,0.15)] z-20 font-mono">
+          <div className="text-xs uppercase tracking-wide text-accent-blue-light mb-2">Information to confirm:</div>
+          <div className="text-sm mb-1">
+            <span className="text-muted-light mr-2">Name:</span>
+            <span className="text-white">{userData.name}</span>
+          </div>
+          <div className="text-sm mb-2">
+            <span className="text-muted-light mr-2">Email:</span>
+            <span className="text-white">{userData.email}</span>
+          </div>
+          <div className="text-[10px] text-muted-light pt-1 border-t border-white/10">
+            Type 'confirm' to complete or 'edit' to modify
+          </div>
+        </div>
+      )}
+      
       {/* Conteneur d'historique */}
       <div 
         ref={historyContainerRef}
-        className="w-full h-[calc(100%-40px)] overflow-y-auto overflow-x-hidden mb-2 scrollbar-terminal"
+        className="w-full h-[calc(100%-70px)] overflow-y-auto overflow-x-hidden mb-4 scrollbar-terminal"
       >
         {history.map((item) => (
           <div key={item.id} className={`mb-1 leading-relaxed ${item.isCommand ? 'text-white' : ''}`}>
@@ -436,7 +470,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
       </div>
       
       {/* Zone de saisie */}
-      <div className="relative flex items-center">
+      <div className="relative flex items-center mb-10">
         <span className="text-muted-light mr-2">{'>'}</span>
         <div className="relative flex-1">
           <input
@@ -460,7 +494,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
       </div>
       
       {/* Barre de statut */}
-      <div className="absolute bottom-0 left-0 w-full py-1 px-4 text-xs text-muted-light border-t border-white/10 flex justify-between">
+      <div className="absolute bottom-0 left-0 w-full py-2 px-4 text-xs text-muted-light border-t border-white/10 flex justify-between bg-background/50 backdrop-blur-sm z-10">
         <span>HACKATHON.DEV:~$ {registrationStep}</span>
         <span className={processing ? 'text-accent-blue animate-pulse' : ''}>
           {processing ? 'PROCESSING...' : 'READY'}

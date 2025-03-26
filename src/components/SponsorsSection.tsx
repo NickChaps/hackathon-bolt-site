@@ -205,19 +205,33 @@ const SponsorNode: React.FC<SponsorNodeProps> = ({
       style={{ 
         left: `${position.x}%`, 
         top: `${position.y}%`, 
-        zIndex: isActive ? 10 : 1,
+        zIndex: isActive || isHovered ? 30 : sponsor.id,
         transform: 'translate(-50%, -50%)' // Centrer le badge sur la position
       }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ 
         opacity: 1, 
         scale: isActive ? scale * 1.1 : scale,
+        x: isActive ? 0 : [-(2 + sponsor.id % 4), (2 + sponsor.id % 3), -(2 + sponsor.id % 4)],
+        y: isActive ? 0 : [(2 + sponsor.id % 3), -(3 + sponsor.id % 2), (2 + sponsor.id % 3)]
       }}
       transition={{ 
         type: "spring", 
         stiffness: 300, 
         damping: 20,
-        scale: { duration: 0.4 }
+        scale: { duration: 0.4 },
+        x: { 
+          duration: 12 + (sponsor.id % 7), 
+          repeat: Infinity, 
+          ease: "easeInOut",
+          delay: sponsor.id * 0.5 
+        },
+        y: { 
+          duration: 10 + (sponsor.id % 6), 
+          repeat: Infinity, 
+          ease: "easeInOut",
+          delay: sponsor.id * 0.3 
+        }
       }}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}

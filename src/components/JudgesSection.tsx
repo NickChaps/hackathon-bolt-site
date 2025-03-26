@@ -1,8 +1,14 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogTrigger,
+  DialogTitle,
+  DialogHeader
+} from '@/components/ui/dialog';
 
 // Données pour les juges
 const judges = [
@@ -83,6 +89,7 @@ const judges = [
 export default function JudgesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
+  const [activeJudge, setActiveJudge] = useState<number | null>(null);
   
   return (
     <section 
@@ -185,9 +192,12 @@ export default function JudgesSection() {
                 visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
               }}
             >
-              <HoverCard>
-                <HoverCardTrigger asChild>
-                  <div className="glass rounded-2xl p-6 border border-white/10 cursor-pointer group transition-all duration-300 hover:border-accent-blue/30 hover:shadow-[0_0_30px_rgba(20,136,252,0.1)]">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div 
+                    className="glass rounded-2xl p-6 border border-white/10 cursor-pointer group transition-all duration-300 hover:border-accent-blue/30 hover:shadow-[0_0_30px_rgba(20,136,252,0.1)]"
+                    onClick={() => setActiveJudge(judge.id)}
+                  >
                     <div className="flex flex-col">
                       {/* Photo de profil (placeholder) */}
                       <div className="w-32 h-32 rounded-xl bg-white/5 mx-auto mb-6 overflow-hidden gradient-border">
@@ -203,58 +213,59 @@ export default function JudgesSection() {
                         <p className="text-accent-blue">{judge.company}</p>
                       </div>
                       
-                      {/* Indicateur "hover pour plus" */}
+                      {/* Indicateur "tap pour plus" */}
                       <div className="mt-4 text-center text-xs text-muted opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                        Hover for details
+                        <span className="md:hidden">Tap for details</span>
+                        <span className="hidden md:inline">Click for details</span>
                       </div>
                     </div>
                   </div>
-                </HoverCardTrigger>
+                </DialogTrigger>
                 
-                <HoverCardContent className="glass border-white/10 w-80 p-6">
-                  <div className="flex flex-col space-y-2">
-                    <h4 className="text-lg font-bold text-white">{judge.name}</h4>
+                <DialogContent className="glass border-white/10 p-6 max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-lg font-bold text-white">{judge.name}</DialogTitle>
                     <p className="text-accent-blue-light">{judge.title} at {judge.company}</p>
-                    
-                    <p className="text-sm text-muted-light mt-2">{judge.bio}</p>
-                    
-                    <div className="mt-4">
-                      <h5 className="text-xs uppercase tracking-wider text-muted mb-2">Expertise</h5>
-                      <div className="flex flex-wrap gap-2">
-                        {judge.expertise.map((skill, index) => (
-                          <span 
-                            key={index}
-                            className="px-2 py-1 bg-white/5 rounded-full text-xs text-accent-blue-light"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2 mt-4">
-                      <a 
-                        href={judge.socialLinks.twitter}
-                        className="p-2 bg-white/5 rounded-full hover:bg-accent-blue/20 transition-colors"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
-                        </svg>
-                      </a>
-                      <a 
-                        href={judge.socialLinks.linkedin}
-                        className="p-2 bg-white/5 rounded-full hover:bg-accent-blue/20 transition-colors"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M6 9H2V21H6V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </a>
+                  </DialogHeader>
+                  
+                  <p className="text-sm text-muted-light mt-4">{judge.bio}</p>
+                  
+                  <div className="mt-4">
+                    <h5 className="text-xs uppercase tracking-wider text-muted mb-2">Expertise</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {judge.expertise.map((skill, index) => (
+                        <span 
+                          key={index}
+                          className="px-2 py-1 bg-white/5 rounded-full text-xs text-accent-blue-light"
+                        >
+                          {skill}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                </HoverCardContent>
-              </HoverCard>
+                  
+                  <div className="flex gap-2 mt-4">
+                    <a 
+                      href={judge.socialLinks.twitter}
+                      className="p-2 bg-white/5 rounded-full hover:bg-accent-blue/20 transition-colors"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                    <a 
+                      href={judge.socialLinks.linkedin}
+                      className="p-2 bg-white/5 rounded-full hover:bg-accent-blue/20 transition-colors"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M6 9H2V21H6V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </a>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </motion.div>
           ))}
         </motion.div>
