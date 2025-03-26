@@ -119,10 +119,7 @@ export default function NavBar() {
   }, [mobileMenuOpen, detectActiveSection, linkClicked]);
   
   // Fermer le menu mobile quand on clique sur un lien
-  const handleMobileLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, linkId: string) => {
-    // Empêcher le comportement par défaut de navigation par ancre
-    e.preventDefault();
-    
+  const handleMobileLinkClick = (linkId: string) => {
     // Définir la section active immédiatement pour un feedback visuel instantané
     setActiveSection(linkId);
     lastActiveSection.current = linkId;
@@ -130,26 +127,11 @@ export default function NavBar() {
     // Indiquer qu'un lien a été cliqué
     setLinkClicked(true);
     
-    // Fermer le menu mobile
-    setMobileMenuOpen(false);
-    
-    // Réinitialiser les styles du body après la fermeture du menu
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    
-    // Attendre un court délai pour que le menu se ferme
+    // Fermer le menu avec un court délai pour permettre aux animations de se terminer
+    // et aux états de se mettre à jour correctement
     setTimeout(() => {
-      // Trouver l'élément cible et défiler jusqu'à lui
-      const targetElement = document.getElementById(linkId);
-      if (targetElement) {
-        // Défiler jusqu'à l'élément avec une animation fluide
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
-        // Mettre à jour l'URL avec l'ancre pour la cohérence de navigation
-        window.history.pushState({}, '', `#${linkId}`);
-      }
-    }, 100);
+      setMobileMenuOpen(false);
+    }, 50);
   };
 
   return (
@@ -454,7 +436,7 @@ export default function NavBar() {
                     >
                       <Link 
                         href={link.href}
-                        onClick={(e) => handleMobileLinkClick(e, link.id)}
+                        onClick={() => handleMobileLinkClick(link.id)}
                         className={`block text-center text-xl p-4 rounded-lg ${
                           activeSection === link.id
                             ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
