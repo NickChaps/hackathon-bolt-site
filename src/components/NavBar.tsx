@@ -29,6 +29,7 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [linkClicked, setLinkClicked] = useState(false);
   
   // Refs pour les éléments de navigation
   const navRefs = useRef<Array<HTMLLIElement | null>>([]);
@@ -94,11 +95,15 @@ export default function NavBar() {
       document.body.style.top = '';
       document.body.style.width = '';
       
-      // Restaurer la position de défilement exacte sans modifier la section active
-      window.scrollTo(0, scrollPosition.current);
+      // Restaurer la position de défilement UNIQUEMENT si aucun lien n'a été cliqué
+      if (!linkClicked) {
+        window.scrollTo(0, scrollPosition.current);
+      }
+      
+      // Réinitialiser l'état de clic sur lien
+      setLinkClicked(false);
       
       // Réappliquer la section active après fermeture du menu
-      // pour s'assurer qu'elle ne change pas
       const currentActiveSection = detectActiveSection();
       setActiveSection(currentActiveSection);
     }
@@ -111,22 +116,40 @@ export default function NavBar() {
         document.body.style.width = '';
       }
     };
-  }, [mobileMenuOpen, detectActiveSection]);
+  }, [mobileMenuOpen, detectActiveSection, linkClicked]);
   
   // Fermer le menu mobile quand on clique sur un lien
-  const handleMobileLinkClick = (linkId: string) => {
+  const handleMobileLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, linkId: string) => {
+    // Empêcher le comportement par défaut de navigation par ancre
+    e.preventDefault();
+    
     // Définir la section active immédiatement pour un feedback visuel instantané
     setActiveSection(linkId);
     lastActiveSection.current = linkId;
     
-    // Fermer le menu avec un court délai pour permettre aux animations de se terminer
-    // et aux états de se mettre à jour correctement
-    setTimeout(() => {
-      setMobileMenuOpen(false);
-    }, 50);
+    // Indiquer qu'un lien a été cliqué
+    setLinkClicked(true);
     
-    // Ne pas empêcher la navigation par défaut
-    // Le navigateur va automatiquement scroller vers l'ancre
+    // Fermer le menu mobile
+    setMobileMenuOpen(false);
+    
+    // Réinitialiser les styles du body après la fermeture du menu
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    
+    // Attendre un court délai pour que le menu se ferme
+    setTimeout(() => {
+      // Trouver l'élément cible et défiler jusqu'à lui
+      const targetElement = document.getElementById(linkId);
+      if (targetElement) {
+        // Défiler jusqu'à l'élément avec une animation fluide
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Mettre à jour l'URL avec l'ancre pour la cohérence de navigation
+        window.history.pushState({}, '', `#${linkId}`);
+      }
+    }, 100);
   };
 
   return (
@@ -431,7 +454,7 @@ export default function NavBar() {
                     >
                       <Link 
                         href={link.href}
-                        onClick={() => handleMobileLinkClick(link.id)}
+                        onClick={(e) => handleMobileLinkClick(e, link.id)}
                         className={`block text-center text-xl p-4 rounded-lg ${
                           activeSection === link.id
                             ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
