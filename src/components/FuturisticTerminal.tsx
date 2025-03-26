@@ -451,7 +451,7 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
             <span className="text-white">{userData.email}</span>
           </div>
           <div className="text-[10px] text-muted-light pt-1 border-t border-white/10">
-            Type 'confirm' to complete or 'edit' to modify
+            Type &apos;confirm&apos; to complete or &apos;edit&apos; to modify
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { 
   Dialog, 
@@ -89,7 +89,6 @@ const judges = [
 export default function JudgesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
-  const [activeJudge, setActiveJudge] = useState<number | null>(null);
   
   return (
     <section 
@@ -196,7 +195,6 @@ export default function JudgesSection() {
                 <DialogTrigger asChild>
                   <div 
                     className="glass rounded-2xl p-6 border border-white/10 cursor-pointer group transition-all duration-300 hover:border-accent-blue/30 hover:shadow-[0_0_30px_rgba(20,136,252,0.1)]"
-                    onClick={() => setActiveJudge(judge.id)}
                   >
                     <div className="flex flex-col">
                       {/* Photo de profil (placeholder) */}
