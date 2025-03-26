@@ -421,7 +421,7 @@ export default function NavBar() {
       
       {/* Bouton menu mobile avec animation par classes conditionnelles - simplifié avec position fixe */}
       <button
-        className="md:hidden fixed top-4 right-4 z-50 w-10 h-10 flex flex-col items-center justify-center"
+        className="md:hidden fixed top-4 right-4 z-[200] w-10 h-10 flex flex-col items-center justify-center"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label={mobileMenuOpen ? "Close Menu" : "Open Menu"}
       >
