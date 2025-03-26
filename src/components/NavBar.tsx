@@ -29,12 +29,10 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [linkClicked, setLinkClicked] = useState(false);
   
   // Refs pour les éléments de navigation
   const navRefs = useRef<Array<HTMLLIElement | null>>([]);
   const lastActiveSection = useRef(activeSection);
-  const scrollPosition = useRef(0);
 
   // Fonction pour détecter la section active
   const detectActiveSection = useCallback(() => {
@@ -75,48 +73,33 @@ export default function NavBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [detectActiveSection, mobileMenuOpen]);
   
-  // Mettre à jour la section active lorsque le menu mobile s'ouvre
+  // Gestion de l'ouverture/fermeture du menu mobile et du défilement
   useEffect(() => {
     if (mobileMenuOpen) {
       // Stocker la section active actuelle quand on ouvre le menu
       const currentActiveSection = detectActiveSection();
       setActiveSection(currentActiveSection);
       
-      // Stocker la position de défilement actuelle
-      scrollPosition.current = window.scrollY;
+      // Désactiver le défilement
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Réactiver le défilement
+      document.body.style.overflow = '';
       
-      // Désactiver le défilement tout en conservant la position visuelle
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollPosition.current}px`;
-      document.body.style.width = '100%';
-    } else if (document.body.style.position === 'fixed') {
-      // Restaurer le défilement et la position seulement si on était en position fixed
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      
-      // Restaurer la position de défilement UNIQUEMENT si aucun lien n'a été cliqué
-      if (!linkClicked) {
-        window.scrollTo(0, scrollPosition.current);
+      // Mettre à jour la section active après fermeture du menu
+      if (document.readyState === 'complete') {
+        setTimeout(() => {
+          const currentActiveSection = detectActiveSection();
+          setActiveSection(currentActiveSection);
+        }, 100);
       }
-      
-      // Réinitialiser l'état de clic sur lien
-      setLinkClicked(false);
-      
-      // Réappliquer la section active après fermeture du menu
-      const currentActiveSection = detectActiveSection();
-      setActiveSection(currentActiveSection);
     }
     
     return () => {
       // Nettoyage en cas de démontage du composant
-      if (document.body.style.position === 'fixed') {
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-      }
+      document.body.style.overflow = '';
     };
-  }, [mobileMenuOpen, detectActiveSection, linkClicked]);
+  }, [mobileMenuOpen, detectActiveSection]);
   
   // Fermer le menu mobile quand on clique sur un lien
   const handleMobileLinkClick = (linkId: string) => {
@@ -124,14 +107,10 @@ export default function NavBar() {
     setActiveSection(linkId);
     lastActiveSection.current = linkId;
     
-    // Indiquer qu'un lien a été cliqué
-    setLinkClicked(true);
-    
-    // Fermer le menu avec un court délai pour permettre aux animations de se terminer
-    // et aux états de se mettre à jour correctement
+    // Fermer le menu avec un délai pour permettre à la navigation de s'initier
     setTimeout(() => {
       setMobileMenuOpen(false);
-    }, 50);
+    }, 100);
   };
 
   return (
