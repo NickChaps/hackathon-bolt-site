@@ -379,24 +379,28 @@ export default function AboutSection() {
               <h3 className="text-4xl md:text-6xl font-bold text-white mb-4 px-4 sm:px-0">
                 Redefining
               </h3>
-              <div className="relative overflow-hidden px-4 sm:px-0">
-                {/* Animation subtile de pulsation */}
-                <motion.div 
-                  className="absolute -inset-x-2 -inset-y-1 opacity-40 rounded-lg"
-                  style={{ 
-                    background: 'linear-gradient(90deg, rgba(20,136,252,0.1) 0%, rgba(138,218,255,0.3) 50%, rgba(20,136,252,0.1) 100%)' 
-                  }}
-                  animate={{
-                    opacity: [0.2, 0.4, 0.2],
-                    scale: [0.98, 1.02, 0.98],
-                    filter: ['blur(8px)', 'blur(12px)', 'blur(8px)']
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
+              <div className="relative overflow-visible px-4 sm:px-0">
+                {/* Glow effect totalement organique */}
+                <div className="absolute inset-0 w-full h-full overflow-visible">
+                  <motion.div 
+                    className="absolute top-1/2 left-1/2 w-[120%] h-[180%] transform -translate-x-1/2 -translate-y-1/2"
+                    style={{ 
+                      background: 'radial-gradient(ellipse 50% 50% at center, rgba(138,218,255,0.3) 0%, rgba(20,136,252,0.1) 45%, rgba(0,0,0,0) 80%)',
+                      filter: 'blur(15px)',
+                      opacity: 0.6,
+                      zIndex: -1
+                    }}
+                    animate={{
+                      opacity: [0.4, 0.7, 0.4],
+                      scale: [0.9, 1.05, 0.9],
+                    }}
+                    transition={{
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                </div>
                 <h2 className="relative text-4xl sm:text-5xl md:text-7xl font-black tracking-wide">
                   <motion.span 
                     className="inline-block bg-gradient-to-r from-[#1488fc] via-[#8adaff] to-[#1488fc] bg-clip-text text-transparent"

@@ -322,12 +322,67 @@ export default function NavBar() {
             {/* Fond du bouton avec effet de glow */}
             <span className="absolute inset-0 bg-gradient-to-r from-accent-blue to-accent-blue-light rounded-md opacity-90 group-hover:opacity-100 transition-opacity duration-300"></span>
             
-            {/* Effet de brillance au hover */}
-            <span className="absolute inset-0 w-full h-full shine-effect opacity-0 group-hover:opacity-100"></span>
+            {/* Effet de brillance au hover avec un effet organique */}
+            <motion.div
+              className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 overflow-hidden rounded-md"
+            >
+              {/* Points de lumière animés qui se déplacent organiquement */}
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{ 
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 70%)',
+                    width: `${20 + i * 5}px`,
+                    height: `${20 + i * 5}px`,
+                    filter: 'blur(4px)',
+                    x: `${10 + i * 20}%`,
+                    y: `${30 + (i % 3) * 10}%`,
+                  }}
+                  animate={{
+                    x: [
+                      `${10 + i * 20}%`, 
+                      `${30 + (i % 4) * 15}%`, 
+                      `${5 + (i % 3) * 25}%`, 
+                      `${10 + i * 20}%`
+                    ],
+                    y: [
+                      `${30 + (i % 3) * 10}%`, 
+                      `${50 - (i % 4) * 10}%`, 
+                      `${20 + (i % 2) * 20}%`, 
+                      `${30 + (i % 3) * 10}%`
+                    ],
+                    opacity: [0.3, 0.7, 0.5, 0.3],
+                    scale: [1, 1.2, 0.9, 1],
+                  }}
+                  transition={{
+                    duration: 4 + i,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                    repeatType: "loop",
+                  }}
+                />
+              ))}
+            </motion.div>
             
-            {/* Animation de pulse autour du bouton */}
+            {/* Animation de pulse autour du bouton - effet organique */}
             <span className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-accent-blue to-accent-blue-light blur-md group-hover:animate-pulse"></span>
+              <motion.div 
+                className="absolute inset-0 rounded-lg"
+                style={{ 
+                  background: 'radial-gradient(circle at center, rgba(138,218,255,0.7) 0%, rgba(20,136,252,0.3) 50%, transparent 70%)',
+                  filter: 'blur(8px)',
+                }}
+                animate={{
+                  opacity: [0.5, 0.8, 0.5],
+                  scale: [0.98, 1.02, 0.98],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
             </span>
             
             <span className="relative z-10">Register Now</span>
