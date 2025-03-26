@@ -8,6 +8,7 @@ import FuturisticTerminal from './FuturisticTerminal';
 
 export default function RegisterSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const successRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
   
   // État pour le formulaire
@@ -26,6 +27,16 @@ export default function RegisterSection() {
       loading: false,
       submitted: true
     });
+
+    // Scroll vers le composant de succès avec une animation douce après un court délai
+    setTimeout(() => {
+      if (successRef.current) {
+        successRef.current.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }, 500);
   };
   
   // Animation du code binaire en arrière-plan
@@ -131,7 +142,7 @@ export default function RegisterSection() {
                     <FuturisticTerminal onSubmit={handleSubmit} />
                   </div>
                 ) : (
-                  <div className="py-10 text-center">
+                  <div className="py-10 text-center" ref={successRef}>
                     <motion.div
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}

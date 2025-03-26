@@ -8,6 +8,7 @@ interface TerminalHistoryItem {
   isCommand: boolean;
   content: string;
   id: number;
+  className?: string;
 }
 
 interface UserData {
@@ -146,13 +147,12 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
     // Diviser le contenu en caractères
     const chars = content.split('');
     let tempContent = '';
-    let tempHistory = [...history];
-    const responseId = nextId;
     
     // Ajouter une entrée vide
-    tempHistory = [...tempHistory, { isCommand: false, content: '', id: responseId }];
-    setHistory(tempHistory);
-    setNextId(prev => prev + 1);
+    setHistory(prev => {
+      const currentId = prev.length > 0 ? Math.max(...prev.map(item => item.id)) + 1 : 0;
+      return [...prev, { isCommand: false, content: '', id: currentId }];
+    });
     
     // Retourne une promise qui se résout quand l'animation est terminée
     return new Promise<void>((resolve) => {
@@ -162,13 +162,14 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         const interval = setInterval(() => {
           if (i < chars.length) {
             tempContent += chars[i];
-            setHistory(prev => 
-              prev.map(item => 
-                item.id === responseId 
+            setHistory(prev => {
+              const lastItem = prev[prev.length - 1];
+              return prev.map(item => 
+                item.id === lastItem.id 
                   ? { ...item, content: tempContent } 
                   : item
-              )
-            );
+              );
+            });
             i++;
             
             // Faire défiler automatiquement avec chaque caractère
@@ -186,15 +187,17 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         }, 15);
       }, 200);
     });
-  }, [history, nextId]);
+  }, []);
   
   // Gérer les commandes
   const processCommand = useCallback((cmd: string) => {
     const command = cmd.trim().toLowerCase();
     
     // Ajouter la commande à l'historique
-    setHistory(prev => [...prev, { isCommand: true, content: cmd, id: nextId }]);
-    setNextId(prev => prev + 1);
+    setHistory(prev => {
+      const currentId = prev.length > 0 ? Math.max(...prev.map(item => item.id)) + 1 : 0;
+      return [...prev, { isCommand: true, content: cmd, id: currentId }];
+    });
     
     // Animation de scan pour certaines commandes
     if (['start', 'confirm'].includes(command)) {
@@ -229,19 +232,19 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
         }
         addSystemResponse(helpText);
       } else if (command === 'clear') {
+        const clearId = Date.now();
         setHistory([
-          { isCommand: false, content: "// TERMINAL CLEARED", id: nextId + 1 },
-          { isCommand: false, content: "Current step: " + registrationStep, id: nextId + 2 }
+          { isCommand: false, content: "// TERMINAL CLEARED", id: clearId },
+          { isCommand: false, content: "Current step: " + registrationStep, id: clearId + 1 }
         ]);
-        setNextId(prev => prev + 3);
+        setNextId(clearId + 2);
       } else if (command === 'restart') {
-        setRegistrationStep('welcome');
-        setUserData({ name: '', email: '' });
+        const restartId = Date.now();
         setHistory([
-          { isCommand: false, content: "// REGISTRATION RESET", id: nextId + 1 },
-          { isCommand: false, content: "Type 'start' to begin registration or 'help' for commands.", id: nextId + 2 }
+          { isCommand: false, content: "// REGISTRATION RESET", id: restartId },
+          { isCommand: false, content: "Type 'start' to begin registration or 'help' for commands.", id: restartId + 1 }
         ]);
-        setNextId(prev => prev + 3);
+        setNextId(restartId + 2);
       } else if (command === 'back') {
         if (registrationStep === 'email') {
           setRegistrationStep('name');
@@ -303,14 +306,42 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
           (async () => {
             await addSystemResponse(`Email validated: ${cmd}`);
             await new Promise(resolve => setTimeout(resolve, 500));
-            await addSystemResponse("Please review your information:");
-            await new Promise(resolve => setTimeout(resolve, 300));
-            await addSystemResponse(`Name: ${userData.name}`);
-            await new Promise(resolve => setTimeout(resolve, 300));
-            await addSystemResponse(`Email: ${cmd}`);
-            await new Promise(resolve => setTimeout(resolve, 300));
-            await addSystemResponse("Type 'confirm' to complete registration or 'edit' to modify.");
+            
+            setHistory(prev => {
+              const baseId = prev.length > 0 ? Math.max(...prev.map(item => item.id)) + 1 : 0;
+              return [...prev, 
+                {
+                  isCommand: false,
+                  content: "// ========== REVIEW YOUR INFORMATION ==========",
+                  id: baseId
+                },
+                {
+                  isCommand: false,
+                  content: "NAME: " + userData.name,
+                  id: baseId + 1,
+                  className: "text-accent-blue-light"
+                },
+                {
+                  isCommand: false,
+                  content: "EMAIL: " + cmd,
+                  id: baseId + 2,
+                  className: "text-accent-blue-light"
+                },
+                {
+                  isCommand: false,
+                  content: "// ==========================================",
+                  id: baseId + 3
+                },
+                {
+                  isCommand: false,
+                  content: "Type 'confirm' to complete registration or 'edit' to modify.",
+                  id: baseId + 4
+                }
+              ];
+            });
+            
             setRegistrationStep('confirm');
+            setProcessing(false);
           })();
         } else {
           addSystemResponse("Please enter a valid email address.");
@@ -327,8 +358,6 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
             await addSystemResponse("Registration successful! Welcome to the World's Largest Hackathon!");
             await new Promise(resolve => setTimeout(resolve, 500));
             await addSystemResponse("A confirmation has been sent to your email address.");
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await addSystemResponse("Type 'restart' to register another participant or any key to exit.");
             setRegistrationStep('completed');
             // Appeler le callback de soumission
             onSubmit(userData);
@@ -438,31 +467,16 @@ const FuturisticTerminal: React.FC<FuturisticTerminalProps> = ({ onSubmit }) => 
       {/* Effet de particules */}
       <ParticleEffect />
       
-      {/* Panel d'informations à confirmer */}
-      {registrationStep === 'confirm' && (
-        <div className="absolute top-4 right-4 w-64 glass p-4 rounded-md border border-accent-blue/30 shadow-[0_0_15px_rgba(20,136,252,0.15)] z-20 font-mono">
-          <div className="text-xs uppercase tracking-wide text-accent-blue-light mb-2">Information to confirm:</div>
-          <div className="text-sm mb-1">
-            <span className="text-muted-light mr-2">Name:</span>
-            <span className="text-white">{userData.name}</span>
-          </div>
-          <div className="text-sm mb-2">
-            <span className="text-muted-light mr-2">Email:</span>
-            <span className="text-white">{userData.email}</span>
-          </div>
-          <div className="text-[10px] text-muted-light pt-1 border-t border-white/10">
-            Type &apos;confirm&apos; to complete or &apos;edit&apos; to modify
-          </div>
-        </div>
-      )}
-      
       {/* Conteneur d'historique */}
       <div 
         ref={historyContainerRef}
         className="w-full h-[calc(100%-70px)] overflow-y-auto overflow-x-hidden mb-4 scrollbar-terminal"
       >
         {history.map((item) => (
-          <div key={item.id} className={`mb-1 leading-relaxed ${item.isCommand ? 'text-white' : ''}`}>
+          <div 
+            key={item.id} 
+            className={`mb-1 leading-relaxed ${item.isCommand ? 'text-white' : ''} ${item.className || ''}`}
+          >
             {item.isCommand && <span className="text-muted-light">{'> '}</span>}
             {item.content}
           </div>

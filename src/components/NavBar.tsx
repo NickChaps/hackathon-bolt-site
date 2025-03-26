@@ -137,10 +137,10 @@ export default function NavBar() {
             <motion.div
               className="bg-gradient-to-r from-accent-blue to-accent-blue-light w-10 h-10 rounded-md mr-2 flex items-center justify-center overflow-hidden"
               animate={isMobile ? { 
-                rotate: [0, 180]
+                // Remove rotation animation
               } : undefined}
               whileHover={!isMobile ? { 
-                rotate: 180
+                // Remove rotation animation
               } : undefined}
               transition={{ duration: 0.5, repeat: isMobile ? Infinity : undefined, repeatDelay: 3 }}
             >
