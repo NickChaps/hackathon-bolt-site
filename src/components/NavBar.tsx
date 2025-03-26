@@ -76,45 +76,22 @@ export default function NavBar() {
   // Gestion de l'ouverture/fermeture du menu mobile et du défilement
   useEffect(() => {
     if (mobileMenuOpen) {
-      // Stocker la section active actuelle quand on ouvre le menu
-      const currentActiveSection = detectActiveSection();
-      setActiveSection(currentActiveSection);
-      
-      // Désactiver le défilement de manière plus robuste
+      // Simplement désactiver le défilement quand le menu est ouvert
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${window.scrollY}px`;
-      document.body.style.width = '100%';
     } else {
-      // Récupérer la position de défilement
-      const scrollY = document.body.style.top;
-      
-      // Réactiver le défilement
+      // Réactiver le défilement quand le menu est fermé
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      
-      // Restaurer la position si on a simplement fermé le menu sans cliquer sur un lien
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
       
       // Mettre à jour la section active après fermeture du menu
-      if (document.readyState === 'complete') {
-        setTimeout(() => {
-          const currentActiveSection = detectActiveSection();
-          setActiveSection(currentActiveSection);
-        }, 100);
-      }
+      setTimeout(() => {
+        const currentActiveSection = detectActiveSection();
+        setActiveSection(currentActiveSection);
+      }, 100);
     }
     
     return () => {
       // Nettoyage en cas de démontage du composant
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
     };
   }, [mobileMenuOpen, detectActiveSection]);
   
