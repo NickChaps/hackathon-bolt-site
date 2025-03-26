@@ -29,12 +29,10 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [linkClicked, setLinkClicked] = useState(false);
   
   // Refs pour les éléments de navigation
   const navRefs = useRef<Array<HTMLLIElement | null>>([]);
   const lastActiveSection = useRef(activeSection);
-  const scrollPosition = useRef(0);
 
   // Fonction pour détecter la section active
   const detectActiveSection = useCallback(() => {
@@ -75,48 +73,27 @@ export default function NavBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [detectActiveSection, mobileMenuOpen]);
   
-  // Mettre à jour la section active lorsque le menu mobile s'ouvre
+  // Gestion de l'ouverture/fermeture du menu mobile et du défilement
   useEffect(() => {
     if (mobileMenuOpen) {
-      // Stocker la section active actuelle quand on ouvre le menu
-      const currentActiveSection = detectActiveSection();
-      setActiveSection(currentActiveSection);
+      // Simplement désactiver le défilement quand le menu est ouvert
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Réactiver le défilement quand le menu est fermé
+      document.body.style.overflow = '';
       
-      // Stocker la position de défilement actuelle
-      scrollPosition.current = window.scrollY;
-      
-      // Désactiver le défilement tout en conservant la position visuelle
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollPosition.current}px`;
-      document.body.style.width = '100%';
-    } else if (document.body.style.position === 'fixed') {
-      // Restaurer le défilement et la position seulement si on était en position fixed
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      
-      // Restaurer la position de défilement UNIQUEMENT si aucun lien n'a été cliqué
-      if (!linkClicked) {
-        window.scrollTo(0, scrollPosition.current);
-      }
-      
-      // Réinitialiser l'état de clic sur lien
-      setLinkClicked(false);
-      
-      // Réappliquer la section active après fermeture du menu
-      const currentActiveSection = detectActiveSection();
-      setActiveSection(currentActiveSection);
+      // Mettre à jour la section active après fermeture du menu
+      setTimeout(() => {
+        const currentActiveSection = detectActiveSection();
+        setActiveSection(currentActiveSection);
+      }, 100);
     }
     
     return () => {
       // Nettoyage en cas de démontage du composant
-      if (document.body.style.position === 'fixed') {
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-      }
+      document.body.style.overflow = '';
     };
-  }, [mobileMenuOpen, detectActiveSection, linkClicked]);
+  }, [mobileMenuOpen, detectActiveSection]);
   
   // Fermer le menu mobile quand on clique sur un lien
   const handleMobileLinkClick = (linkId: string) => {
@@ -124,14 +101,10 @@ export default function NavBar() {
     setActiveSection(linkId);
     lastActiveSection.current = linkId;
     
-    // Indiquer qu'un lien a été cliqué
-    setLinkClicked(true);
-    
-    // Fermer le menu avec un court délai pour permettre aux animations de se terminer
-    // et aux états de se mettre à jour correctement
+    // Fermer le menu avec un délai pour permettre à la navigation de s'initier
     setTimeout(() => {
       setMobileMenuOpen(false);
-    }, 50);
+    }, 100);
   };
 
   return (
@@ -410,46 +383,44 @@ export default function NavBar() {
       <AnimatePresence mode="wait">
         {mobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-45 md:hidden bg-background/95 backdrop-blur-xl flex items-center justify-center"
+            className="fixed inset-0 top-0 left-0 w-full h-screen z-[100] md:hidden bg-black/95 backdrop-blur-xl flex items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="w-full h-full flex items-center justify-center px-4">
-              <motion.nav 
-                className="w-full max-w-md" 
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ delay: 0.1, duration: 0.3 }}
-              >
-                <ul className="flex flex-col items-center space-y-6 p-8 pt-20">
-                  {navLinks.map((link, index) => (
-                    <motion.li 
-                      key={link.id}
-                      className="w-full"
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 20, opacity: 0 }}
-                      transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+            <motion.nav 
+              className="w-full max-w-md px-4" 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+            >
+              <ul className="flex flex-col items-center space-y-6 p-8 pt-20">
+                {navLinks.map((link, index) => (
+                  <motion.li 
+                    key={link.id}
+                    className="w-full"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 20, opacity: 0 }}
+                    transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                  >
+                    <Link 
+                      href={link.href}
+                      onClick={() => handleMobileLinkClick(link.id)}
+                      className={`block text-center text-xl p-4 rounded-lg ${
+                        activeSection === link.id
+                          ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
+                          : 'text-white hover:bg-white/5 border border-transparent'
+                      } ${link.id === 'register' ? 'bg-gradient-to-r from-accent-blue to-accent-blue-light text-white font-bold shadow-md' : ''}`}
                     >
-                      <Link 
-                        href={link.href}
-                        onClick={() => handleMobileLinkClick(link.id)}
-                        className={`block text-center text-xl p-4 rounded-lg ${
-                          activeSection === link.id
-                            ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
-                            : 'text-white hover:bg-white/5 border border-transparent'
-                        } ${link.id === 'register' ? 'bg-gradient-to-r from-accent-blue to-accent-blue-light text-white font-bold shadow-md' : ''}`}
-                      >
-                        {link.id === 'register' ? 'Register Now' : link.name}
-                      </Link>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.nav>
-            </div>
+                      {link.id === 'register' ? 'Register Now' : link.name}
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.nav>
           </motion.div>
         )}
       </AnimatePresence>
