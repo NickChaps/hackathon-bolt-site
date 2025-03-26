@@ -383,46 +383,44 @@ export default function NavBar() {
       <AnimatePresence mode="wait">
         {mobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-45 md:hidden bg-background/95 backdrop-blur-xl overflow-hidden"
+            className="fixed inset-0 top-0 left-0 w-full h-screen z-[100] md:hidden bg-black/95 backdrop-blur-xl flex items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="w-full h-full flex items-center justify-center px-4 overflow-hidden">
-              <motion.nav 
-                className="w-full max-w-md overflow-auto max-h-screen py-10" 
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ delay: 0.1, duration: 0.3 }}
-              >
-                <ul className="flex flex-col items-center space-y-6 p-8 pt-20">
-                  {navLinks.map((link, index) => (
-                    <motion.li 
-                      key={link.id}
-                      className="w-full"
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 20, opacity: 0 }}
-                      transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+            <motion.nav 
+              className="w-full max-w-md px-4" 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+            >
+              <ul className="flex flex-col items-center space-y-6 p-8 pt-20">
+                {navLinks.map((link, index) => (
+                  <motion.li 
+                    key={link.id}
+                    className="w-full"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 20, opacity: 0 }}
+                    transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
+                  >
+                    <Link 
+                      href={link.href}
+                      onClick={() => handleMobileLinkClick(link.id)}
+                      className={`block text-center text-xl p-4 rounded-lg ${
+                        activeSection === link.id
+                          ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
+                          : 'text-white hover:bg-white/5 border border-transparent'
+                      } ${link.id === 'register' ? 'bg-gradient-to-r from-accent-blue to-accent-blue-light text-white font-bold shadow-md' : ''}`}
                     >
-                      <Link 
-                        href={link.href}
-                        onClick={() => handleMobileLinkClick(link.id)}
-                        className={`block text-center text-xl p-4 rounded-lg ${
-                          activeSection === link.id
-                            ? 'bg-accent-blue/20 text-accent-blue-light border border-accent-blue/30 shadow-sm shadow-accent-blue/20'
-                            : 'text-white hover:bg-white/5 border border-transparent'
-                        } ${link.id === 'register' ? 'bg-gradient-to-r from-accent-blue to-accent-blue-light text-white font-bold shadow-md' : ''}`}
-                      >
-                        {link.id === 'register' ? 'Register Now' : link.name}
-                      </Link>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.nav>
-            </div>
+                      {link.id === 'register' ? 'Register Now' : link.name}
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.nav>
           </motion.div>
         )}
       </AnimatePresence>
